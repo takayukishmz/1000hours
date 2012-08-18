@@ -1,0 +1,47 @@
+	<!-- <!DOCTYPE html> -->
+<html lang='ja'>
+	<head>
+	<meta charset='UTF-8'>
+	<title>Google Chart Tools</title>
+	<script src='https://www.google.com/jsapi'></script>
+	<script>	
+	google.load('visualization', '1.0', {'packages':['corechart']});
+	google.setOnLoadCallback(drawChart);
+	
+	function drawChart() {		
+	// 円グラフ		
+	// データを用意する		
+	// 列	列		
+	// label n		
+	// label n		
+	// label n		
+	var data = new google.visualization.DataTable();
+	
+	data.addColumn('string', '活動');
+	data.addColumn('number', '時間');
+	data.addRows([
+		['睡眠', 8],
+		['仕事', 12],
+		['ネット', 4]
+	]);				
+	// グラフのオプションを指定する		
+	var options = {			
+		title: '1日の内訳',			
+		width: 320,			
+		height: 300,			
+		pieSliceText: 'label',			
+		is3D: true	
+	}		
+	// 描画する		
+	var chart = new google.visualization.PieChart(document.getElementById('chart'));		
+	chart.draw(data, options);	
+	}
+	// var url = location.search.substring(1);
+	alert 'url'
+	</script>
+	</head>
+	<body>	
+	<div style='color:red;'>Hello from inline HTML. You should see red text and yellow background</div>
+	<div id='chart'><a>aaaa</a></div>
+	</body>
+</html>
