@@ -191,13 +191,19 @@ Calendar = (function() {
   Calendar.prototype.clearDB = function() {
     db.reset("RECORD");
   };
-  Calendar.prototype.isPastDay = function(day) {
-    var today;
+  Calendar.prototype.isPastDay = function(selectedDay) {
+    var day, month, selectedYMD, today, todayD, todayM, todayY, todayYMD;
+    month = '0' + this._month.toString();
+    day = '0' + selectedDay.toString();
     today = new Date();
-    if (this._month > (today.getMonth() + 1)) {
-      return false;
-    }
-    if (day > today.getDate()) {
+    todayY = today.getFullYear();
+    todayM = today.getMonth() + 1;
+    todayD = today.getDate();
+    todayM = '0' + todayM.toString();
+    todayD = '0' + todayD.toString();
+    todayYMD = this._year.toString() + todayM.substr(-2, 2).toString() + todayD.substr(-2, 2).toString();
+    selectedYMD = todayY.toString() + month.substr(-2, 2).toString() + day.substr(-2, 2).toString();
+    if (selectedYMD > todayYMD) {
       return false;
     }
     return true;

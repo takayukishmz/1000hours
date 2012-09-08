@@ -7,55 +7,17 @@ class CircleGraph extends BaseComponent
 	_ICON_SIZE:[35,29]
 	_ICON_MARGIN:10
 	_ICON_POS:[185,180]
-	
+
+	_WEBVIEW_URL_CIRCLE :"https://dl.dropbox.com/u/15300991/circle.html?"
 	constructor : () ->
 		super
 			top:0
 			height:'333'
+				
 		
-		
-		
-		@webview = Ti.UI.createWebView
-			backgroundColor: '#fff'
-			# borderRadius: 1
-			# borderWidth : 5
-			# borderColor : '#ddd'
-			scalesPageToFit:true
-			top:185
-			left:0
-			width:160
-			height:160	
-			# url:'Component/Chart/circle.html'
-			# url:'Component/circle	.html'
-			
-			# html: '<html><body><div style="color:red;">Hello from inline HTML. You should see red text and yellow background</div></body></html>'
-		
-		@webview.addEventListener 'beforeload', (e) ->
-			alert 'beforeload'
-			return
-		
-		@webview.addEventListener 'error', (e) ->
-			alert 'error'
-			return
-		
-		@webview.addEventListener 'load', (e) ->
-			alert 'load'
-			return
-		
-		# webview.html = html
-		@add @webview
-		
-		
-	_setTime: (times) ->
+	_setTime: (times) =>
 		timeTypes = Const.TIME_TYPE
-		param = ""
-		for value, i in timeTypes
-			param += value+'='+times[value]+'&'
 		
-		alert param
-		@webview.url = "https://dl.dropbox.com/u/15300991/circle.html?"+param
-		
-
 		for value, i in timeTypes
 			hourValue = Math.floor(times[value]/60)
 			minuteValue = times[value] - hourValue*60 
@@ -88,7 +50,7 @@ class CircleGraph extends BaseComponent
 			h = Ti.UI.createLabel
 				top: top
 				left:255
-				width:100
+				width:30
 				height:25
 				text: 'h.'
 				color: '#CCCCCC'
@@ -100,10 +62,11 @@ class CircleGraph extends BaseComponent
 			
 			min = Ti.UI.createLabel
 				top: top
-				left:268
-				width:100
+				right:29
+				width:30
 				height:25
 				text: minuteValue	
+				textAlign :'right'
 				color: '#000'
 				font: {fontFamily: 'Helvetica Neue', fontSize: 16,fontWeight:"bold"}
 			
@@ -111,7 +74,7 @@ class CircleGraph extends BaseComponent
 			
 			m = Ti.UI.createLabel
 				top: top
-				left:290
+				left:293
 				width:100
 				height:25
 				text: 'm'
@@ -121,7 +84,62 @@ class CircleGraph extends BaseComponent
 				font: {fontFamily: 'Helvetica Neue', fontSize: 16,fontWeight:"bold"}
 			@add m
 				
+		
+		@webviewMsg = Ti.UI.createLabel
+			top:235
+			left:20
+			width:160
+			height:50
+			text : ''
+			textAlign : 'center'
+			color: '#444'
+			font: {fontFamily: 'Helvetica Neue', fontSize: 16}
+			
+		@webview = Ti.UI.createWebView
+			backgroundColor: 0
+			# borderRadius: 1
+			# borderWidth : 5
+			# borderColor :0 
+			# scalesPageToFit:true
+			# touchEnabled: false
+			top:175
+			left:10
+			width:160
+			height:160
+		
+		
+		@webview.addEventListener 'beforeload', (e) =>
+			info 'WEBVIEW beforeload'
+			@webviewMsg.text = L 'webview_load'
+			return
+		
+		@webview.addEventListener 'error', (e) =>
+			info 'WEBVIEW error'
+			@webviewMsg.text =  L 'webview_error'
+			return
+		
+		@webview.addEventListener 'load', (e) =>
+			info 'WEBVIEW load'
+			@webviewMsg.text = ''
+			return
+		
+		
+		@webview.addEventListener 'touchmove', () ->
+			return
+		
+		
+			
+		@add @webview
+		@add @webviewMsg
+		
+		param = ""
+		for value, i in timeTypes
+			param += value+'='+times[value]+'&'
+		
+		@webview.url = @_WEBVIEW_URL_CIRCLE+param
+		
 		return 
+		
 	setEvent : () ->
 		Ti.App.addEventListener EventType.update_circle_graph, (times) =>
 			@_setTime times

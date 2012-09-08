@@ -60,14 +60,19 @@ class CalendarView extends BaseComponent
 			@_year.text = @_model.getYear()
 			return
 		
+		
+		@alert = Titanium.UI.createAlertDialog()
+		@alert.setTitle L 'alert_title'
+		@alert.setMessage L 'alert_message'
+		
 		return
 	
 	setDetailPanel : (data) ->
 		#validate day.
 		if !@_model.isPastDay data.day
-			alert 'Select past days'
+			@alert.show()
 			return
-		
+				
 		@dayNum.text = data.day
 		
 		dayIndex = @_model.getDayIndexFromDay data.day
@@ -92,7 +97,7 @@ class CalendarView extends BaseComponent
 		if len <= 35 
 			for	box, i in @boxes
 				data = @_data[i]
-				info 'normal setData', data.day+" daynum:"+@dayNum.text
+				# info 'normal setData', data.day+" daynum:"+@dayNum.text
 				box.setData data
 				
 		else 
@@ -296,7 +301,7 @@ class CalendarView extends BaseComponent
 				timeType : category
 				index : i
 			
-			text = @SAMPLE_VALUE[i]
+			# text = @SAMPLE_VALUE[i]
 			
 			@time = Titanium.UI.createLabel
 				left:0
@@ -304,7 +309,7 @@ class CalendarView extends BaseComponent
 				width:62
 				height:26
 				textAlign :'center'
-				text: text
+				text: ''
 				color:'#333333'
 				minimumFontSize:16
 				font: {fontFamily: 'Helvetica Neue', fontSize:22,fontWeight:"bold"}
@@ -330,16 +335,16 @@ class CalendarView extends BaseComponent
 				textAlign :'right'
 				text: '▼'
 				font: {fontFamily: 'Helvetica', fontSize: 8}
-
+				
 			@add categoryBox
-
+			
 			categoryBox.add @time
-
+			
 			categoryBox.add @categoryLebel
 			categoryBox.add icon
 			
 			categoryBox.addEventListener 'click', (e) =>			
-				info 'categoryBox click',JSON.stringify e
+				# info 'categoryBox click',JSON.stringify e
 				
 				data = 
 					timeType : e.source.timeType.toLowerCase()

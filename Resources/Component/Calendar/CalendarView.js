@@ -70,11 +70,14 @@ CalendarView = (function() {
       this._title.text = this._model.getMonthName();
       this._year.text = this._model.getYear();
     }, this));
+    this.alert = Titanium.UI.createAlertDialog();
+    this.alert.setTitle(L('alert_title'));
+    this.alert.setMessage(L('alert_message'));
   };
   CalendarView.prototype.setDetailPanel = function(data) {
     var dayIndex, i, time, value, _len, _ref;
     if (!this._model.isPastDay(data.day)) {
-      alert('Select past days');
+      this.alert.show();
       return;
     }
     this.dayNum.text = data.day;
@@ -101,7 +104,6 @@ CalendarView = (function() {
       for (i = 0, _len = _ref.length; i < _len; i++) {
         box = _ref[i];
         data = this._data[i];
-        info('normal setData', data.day + " daynum:" + this.dayNum.text);
         box.setData(data);
       }
     } else {
@@ -265,11 +267,11 @@ CalendarView = (function() {
     }
   };
   CalendarView.prototype._buildDetailPanel = function() {
-    var category, categoryBox, i, icon, selectedBox, text, _len, _ref;
+    var category, categoryBox, i, icon, selectedBox, _len, _ref;
     selectedBox = Titanium.UI.createView({
       left: 0,
       top: 343,
-      width: 76,
+      width: 72,
       height: 76,
       backgroundImage: global.getImagePath('Calendar/bottom_date')
     });
@@ -316,7 +318,7 @@ CalendarView = (function() {
     for (i = 0, _len = _ref.length; i < _len; i++) {
       category = _ref[i];
       categoryBox = Titanium.UI.createButton({
-        left: 76 + 62 * i,
+        left: 72 + 62 * i,
         top: 343,
         width: 62,
         height: 76,
@@ -325,14 +327,13 @@ CalendarView = (function() {
         timeType: category,
         index: i
       });
-      text = this.SAMPLE_VALUE[i];
       this.time = Titanium.UI.createLabel({
         left: 0,
         top: 24,
         width: 62,
         height: 26,
         textAlign: 'center',
-        text: text,
+        text: '',
         color: '#333333',
         minimumFontSize: 16,
         font: {
@@ -375,7 +376,6 @@ CalendarView = (function() {
       categoryBox.add(icon);
       categoryBox.addEventListener('click', __bind(function(e) {
         var data;
-        info('categoryBox click', JSON.stringify(e));
         data = {
           timeType: e.source.timeType.toLowerCase(),
           day: this.dayNum.text,

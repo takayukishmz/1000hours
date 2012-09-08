@@ -194,15 +194,25 @@ class Calendar
 		return
 	
 	#check day is past or future
-	isPastDay : (day) ->
+	isPastDay : (selectedDay) ->
+		#selected day
+		month = '0'+@_month.toString()
+		day = '0'+selectedDay.toString()
+		
+		#today
 		today = new Date()
+		todayY = today.getFullYear()
+		todayM = today.getMonth()+1
+		todayD = today.getDate()
+		todayM = '0'+todayM.toString()
+		todayD = '0'+todayD.toString()
 		
-		if @_month > (today.getMonth()+1)
+		todayYMD = @_year.toString()+todayM.substr(-2,2).toString()+todayD.substr(-2,2).toString()
+		selectedYMD = todayY.toString()+month.substr(-2,2).toString()+day.substr(-2,2).toString()
+		
+		if selectedYMD > todayYMD
 			return false
-		
-		if day > today.getDate()
-			return false
-		
+			
 		return true
 	
 	isPastMonth : () ->
