@@ -16,12 +16,12 @@
     <sdk-version>2.1.1.GA</sdk-version>
     <id>com.1000hours</id>
     <name>1000hours</name>
-    <version>0.1.2</version>
+    <version>0.9</version>
     <publisher>shimizutakayuki</publisher>
     <url>http://</url>
     <description>not specified</description>
-    <copyright>2012 by shimizutakayuki</copyright>
-    <icon>icon.png</icon>
+    <copyright>2012 by 87 lab</copyright>
+    <icon>Icon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>true</prerendered-icon>
     <statusbar-style>default</statusbar-style>
@@ -51,4 +51,5 @@
         </splash>
         <theme>default</theme>
     </mobileweb>
+    <property name="ti.facebook.appid">your_facebook_app_id_here</property>
 </ti:app>

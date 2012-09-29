@@ -30,27 +30,25 @@ InputTimeWindow = (function() {
     this.setButton = __bind(this.setButton, this);
     this.setView = __bind(this.setView, this);
     this.params = {
-      title: 'rootWindow',
-      navBarHidden: true,
-      modal: true
+      backgroundColor: 'red',
+      opacity: 0.5,
+      title: getText('title_Input'),
+      top: 0,
+      height: 350,
+      width: 'auto'
     };
     InputTimeWindow.__super__.constructor.call(this, this.params);
-    Ti.App.rootWindow = this.win;
     return this.win;
   }
   InputTimeWindow.prototype.setView = function() {
     var hourColumn, minuteColumn, pickerBase, row, value, _k, _l, _len, _len2, _ref, _ref2;
-    this.subWin = Ti.UI.createWindow({
-      title: getText('title_Input'),
-      backgroundColor: '#333',
-      barColor: '#333'
-    });
-    this.subWin.barImage = global.getImagePath('Common/topbar');
     pickerBase = Ti.UI.createView({
       bottom: 0,
       height: 270
     });
-    this.picker = Ti.UI.createPicker();
+    this.picker = Ti.UI.createPicker({
+      left: 100
+    });
     this.picker.selectionIndicator = true;
     hourColumn = Ti.UI.createPickerColumn();
     minuteColumn = Ti.UI.createPickerColumn();
@@ -71,11 +69,7 @@ InputTimeWindow = (function() {
       minuteColumn.addRow(row);
     }
     this.picker.add([hourColumn, minuteColumn]);
-    this.subWin.add(this.picker);
-    Ti.App.nav = Ti.UI.iPhone.createNavigationGroup({
-      window: this.subWin
-    });
-    this.win.add(Ti.App.nav);
+    this.win.add(this.picker);
   };
   InputTimeWindow.prototype.setEvent = function() {
     return this.win.addEventListener('open', __bind(function() {
@@ -93,7 +87,7 @@ InputTimeWindow = (function() {
       color: 'blue',
       title: 'save'
     });
-    this.subWin.add(save);
+    this.win.add(save);
     return save.addEventListener('click', __bind(function() {
       var data, hourIndex, minIndex;
       hourIndex = this.picker.getSelectedRow(0).title;

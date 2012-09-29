@@ -21,7 +21,7 @@ TotalTimeBarGraph = (function() {
   };
   function TotalTimeBarGraph() {
     this.setMarkPosition = __bind(this.setMarkPosition, this);    TotalTimeBarGraph.__super__.constructor.call(this, {
-      top: 0,
+      top: 45,
       left: 0,
       width: 320,
       height: 200
@@ -33,9 +33,18 @@ TotalTimeBarGraph = (function() {
     this.add(this._bar.getNodeView());
   }
   TotalTimeBarGraph.prototype.setView = function() {
-    var h, hourUnit, m, max, slash, total;
+    var bg, h, hourUnit, m, max, slash, total;
+    bg = Ti.UI.createView({
+      left: 0,
+      top: 5,
+      width: 'auto',
+      align: 'right',
+      height: 155,
+      backgroundImage: global.getImagePath('Chart/bg_barArea')
+    });
+    this.add(bg);
     total = Ti.UI.createView({
-      left: 15,
+      left: 17,
       top: 22,
       width: 60,
       align: 'right',
@@ -69,7 +78,7 @@ TotalTimeBarGraph = (function() {
       width: 100,
       height: 27,
       text: 'h.',
-      color: '#CCCCCC',
+      color: '#333333',
       shadowColor: "#FFFFFF",
       shadowOffset: {
         x: 0,
@@ -108,7 +117,7 @@ TotalTimeBarGraph = (function() {
       width: 40,
       height: 18,
       text: 'm',
-      color: '#CCCCCC',
+      color: '#333333',
       shadowColor: "#FFFFFF",
       shadowOffset: {
         x: 0,
@@ -155,7 +164,7 @@ TotalTimeBarGraph = (function() {
       width: 200,
       height: 16,
       text: 'h',
-      color: '#CCCCCC',
+      color: '#333333',
       shadowColor: "#FFFFFF",
       shadowOffset: {
         x: 0,
@@ -185,7 +194,6 @@ TotalTimeBarGraph = (function() {
   TotalTimeBarGraph.prototype.setEvent = function() {
     return Ti.App.addEventListener(EventType.update_bar_graph, __bind(function(e) {
       var timeFormatedAsHour;
-      info(e);
       timeFormatedAsHour = e.hour + e.minute / 60;
       this._bar.setValue(timeFormatedAsHour, Const.MAX_HOUR);
       this.setMarkPosition();

@@ -8,34 +8,33 @@ class InputTimeWindow extends BaseWindow
 	
 	constructor : (@timeType, @hour, @minute,@day) ->		
 		@params = 
-			title:'rootWindow'
-			navBarHidden:true
-			modal:true
-			
+			# navBarHidden:true
+			# modal:true
+			backgroundColor :'red'
+			opacity : 0.5
+			title: getText 'title_Input'
+			top:0
+			height:350
+			width:'auto'
+		
 		super @params		
-		Ti.App.rootWindow = @win		
+		
 		return @win
 		
-	setView:() =>
-		@subWin = Ti.UI.createWindow 
-			title: getText 'title_Input'
-			backgroundColor:'#333'
-			barColor: '#333'	
-		
-		@subWin.barImage = global.getImagePath 'Common/topbar'		
-			
+	setView:() =>	
 		pickerBase = Ti.UI.createView
 			bottom:0
 			height:270
 		
-		@picker = Ti.UI.createPicker()
+		@picker = Ti.UI.createPicker
+			left:100
 			# format24:true
 			# type:Ti.UI.PICKER_TYPE_COUNT_DOWN_TIMER 
 		
 		@picker.selectionIndicator = true
-		
 		hourColumn = Ti.UI.createPickerColumn()
 		minuteColumn = Ti.UI.createPickerColumn()
+		
 		
 		for value in @HOUR
 			row = Ti.UI.createPickerRow title:value.toString()
@@ -46,13 +45,13 @@ class InputTimeWindow extends BaseWindow
 			minuteColumn.addRow row
 		
 		@picker.add [hourColumn,minuteColumn]
-				
-		@subWin.add @picker
 		
-		Ti.App.nav = Ti.UI.iPhone.createNavigationGroup 
-			window:@subWin
+		@win.add @picker
 		
-		@win.add Ti.App.nav
+		# Ti.App.nav = Ti.UI.iPhone.createNavigationGroup 
+		# 	window:@subWin
+		# 
+		# @win.add Ti.App.nav
 		
 		
 		return
@@ -64,7 +63,6 @@ class InputTimeWindow extends BaseWindow
 			return
 		
 	setButton : () =>
-		
 		save = Ti.UI.createButton
 			bottom:10
 			height:44
@@ -73,7 +71,7 @@ class InputTimeWindow extends BaseWindow
 			color :'blue'
 			title:'save'
 		
-		@subWin.add save
+		@win.add save
 		
 		save.addEventListener 'click', () =>
 			hourIndex = @picker.getSelectedRow(0).title

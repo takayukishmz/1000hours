@@ -14,7 +14,7 @@ DayBox = (function() {
   __extends(DayBox, BaseComponent);
   DayBox.prototype._ICON_NAME = ['write', 'read', 'listen', 'speak'];
   DayBox.prototype._ICON_SIZE = [15, 15];
-  DayBox.prototype._ICON_MARGIN = 5;
+  DayBox.prototype._ICON_MARGIN = 6;
   function DayBox(frame) {
     this.frame = frame;
     this.toggle = __bind(this.toggle, this);
@@ -125,7 +125,7 @@ DayBox = (function() {
       top = 0 + height * rows - rows;
       left = 0 + width * cols - cols;
       icon = Ti.UI.createView({
-        top: 20 + margin + (margin / 2 + width) * cols,
+        top: 17 + margin + (margin / 2 + width) * cols,
         left: margin + (margin / 2 + height) * rows,
         width: height,
         height: width,

@@ -4,24 +4,38 @@ CalendarView  = require('Component/Calendar/CalendarView').CalendarView
 Calendar  	  = require('Model/Calendar').Calendar
 ChartWindow   = require('Window/ChartWindow').ChartWindow
 InputTimeWindow   = require('Window/InputTimeWindow').InputTimeWindow
+SettingNavWindow   = require('Window/SettingNavWindow').SettingNavWindow
+Input   = require('Component/Calendar/Input').Input
 EventType = require('Event/EventType').EventType
 
 class CalendarWindow extends BaseWindow
 	WEEK_COLOR : ["reds","#fff","#fff","#fff","#fff","#fff","#fff"]
 	constructor : () ->
-		super title : getText 'title_calendar'
+		super 
+			title : getText 'title_calendar'
 		
 		@_model = new Calendar()
 		@_model.setDate new Date()
 		
+		@_inputDialog = new Input()
 		@_calendar = new CalendarView(@_model)
-		
+		@_settingNavWindow = new SettingNavWindow()
+		@_chartWindow = new ChartWindow()
 		@_model.setMonthlyData()
 		
 		@win.add @_calendar.getNodeView()		
+		@win.add @_inputDialog.getNodeView()
+		
 		@win.hideTabBar()
 		return @win
-	setView: () ->
+		
+	setView: () =>
+		@setHeaderTitleImage
+			backgroundImage : global.getImagePath 'Calendar/title_calendar'
+			height:21
+			width:120
+			left:100
+			top:12
 		
 		return
 		
@@ -29,18 +43,35 @@ class CalendarWindow extends BaseWindow
 		rightBtn = Ti.UI.createButton
 			top:0
 			right:0
-			width:66
-			height:44
+			width:57
+			height:45
 			backgroundImage : global.getImagePath 'Calendar/btn_chart'
 			backgroundSelectedImage : global.getImagePath 'Calendar/btn_chart_dw'
 		
-		rightBtn.addEventListener 'click', (e) ->
-			global.tabs.currentTab.open new ChartWindow(),{animated:true}
+		rightBtn.addEventListener 'click', (e) =>
+			global.tabs.currentTab.open @_chartWindow,{animated:true}
 			return
 		
 		
-		@win.rightNavButton = rightBtn
-	
+		# @win.rightNavButton = rightBtn
+		@win.add rightBtn
+		
+		leftBtn = Ti.UI.createButton
+			top:0
+			left:0
+			width:57
+			height:45
+			backgroundImage : global.getImagePath 'Calendar/btn_setting'
+			backgroundSelectedImage : global.getImagePath 'Calendar/btn_setting_dw'
+		
+		leftBtn.addEventListener 'click', (e) =>
+			# global.tabs.currentTab.open new ChartWindow(),{animated:true}
+			@_settingNavWindow.open modal:true
+			return
+			
+		# @win.rightNavButton = rightBtn
+		@win.add leftBtn
+		return
 	setEvent: () =>
 		Ti.App.addEventListener EventType.update_target_time, (data) =>
 			
@@ -54,8 +85,8 @@ class CalendarWindow extends BaseWindow
 			hour = hhmm[0]
 			minute = hhmm[1]
 			
-			newWindow = new InputTimeWindow(data.timeType, hour, minute, data.day)
-			newWindow.open()
+			@_inputDialog.setData data.timeType, hour, minute, data.day
+			@_inputDialog.open()
 			return		
 			
 		Ti.App.addEventListener EventType.click_box, (e) =>
@@ -75,5 +106,9 @@ class CalendarWindow extends BaseWindow
 			
 			Ti.App.fireEvent EventType.set_unselect, {day:day}	
 			return
+
+			
+			
+		
 		
 exports.CalendarWindow = CalendarWindow

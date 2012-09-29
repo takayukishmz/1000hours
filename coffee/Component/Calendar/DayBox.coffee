@@ -5,7 +5,7 @@ EventType = require('Event/EventType').EventType
 class DayBox extends BaseComponent
 	_ICON_NAME : ['write','read', 'listen', 'speak']
 	_ICON_SIZE : [15,15]
-	_ICON_MARGIN:5
+	_ICON_MARGIN:6
 
 	constructor : (@frame) ->
 		@icons = []
@@ -112,7 +112,7 @@ class DayBox extends BaseComponent
 			left = 0 + width * cols -  cols 		
 			
 			icon = Ti.UI.createView
-				top: 20+margin+(margin/2+width)*cols
+				top: 17+margin+(margin/2+width)*cols
 				left:margin+(margin/2+height)*rows
 				width:height
 				height:width

@@ -18,6 +18,13 @@ Chart = (function() {
     };
   }
   Chart.prototype.setGraphData = function() {
+    this._times = {
+      write: 0,
+      read: 0,
+      listen: 0,
+      speak: 0
+    };
+    Ti.App.fireEvent('hoge');
     this._setTimeData();
     this._setBarGragh();
     return this._setCirCleGraph();
@@ -40,7 +47,6 @@ Chart = (function() {
         this._times.speak += i.speak;
       }
     }
-    info('ChartModel#_setTimeData', JSON.stringify(this._times));
   };
   Chart.prototype.getTotalTime = function() {
     var key, total, value, _ref;

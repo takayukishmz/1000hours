@@ -4,7 +4,7 @@ JsonText = require('Content/Jp/Text').Text
 util = {}
 
 exports.getImagePath = (path) ->
-	if path.match /^jp/
+	if path.match /^Jp/
 		Ti.API.info 'jp path'
 		path = basePath + path+'.png'
 	else

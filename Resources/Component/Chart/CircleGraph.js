@@ -17,18 +17,21 @@ CircleGraph = (function() {
   CircleGraph.prototype._ICON_POS = [185, 180];
   CircleGraph.prototype._WEBVIEW_URL_CIRCLE = "https://dl.dropbox.com/u/15300991/circle.html?";
   function CircleGraph() {
-    this._setTime = __bind(this._setTime, this);    CircleGraph.__super__.constructor.call(this, {
-      top: 0,
+    this._setTime = __bind(this._setTime, this);
+    this.setView = __bind(this.setView, this);    this._hours = [];
+    this._mins = [];
+    this.paramCache = "";
+    CircleGraph.__super__.constructor.call(this, {
+      top: 45,
       height: '333'
     });
+    return;
   }
-  CircleGraph.prototype._setTime = function(times) {
-    var h, hour, hourValue, i, icon, left, m, min, minuteValue, param, timeTypes, top, value, _len, _len2;
+  CircleGraph.prototype.setView = function() {
+    var h, hour, i, icon, left, m, min, timeTypes, top, value, _len;
     timeTypes = Const.TIME_TYPE;
     for (i = 0, _len = timeTypes.length; i < _len; i++) {
       value = timeTypes[i];
-      hourValue = Math.floor(times[value] / 60);
-      minuteValue = times[value] - hourValue * 60;
       left = this._ICON_POS[0];
       top = this._ICON_POS[1] + i * (this._ICON_SIZE[1] + this._ICON_MARGIN);
       icon = Ti.UI.createView({
@@ -44,7 +47,7 @@ CircleGraph = (function() {
         right: 68,
         width: 30,
         height: 25,
-        text: hourValue,
+        text: '',
         textAlign: 'right',
         color: '#000',
         font: {
@@ -54,13 +57,14 @@ CircleGraph = (function() {
         }
       });
       this.add(hour);
+      this._hours.push(hour);
       h = Ti.UI.createLabel({
         top: top,
         left: 255,
         width: 30,
         height: 25,
         text: 'h.',
-        color: '#CCCCCC',
+        color: '#333333',
         shadowColor: "#FFFFFF",
         shadowOffset: {
           x: 0,
@@ -78,7 +82,7 @@ CircleGraph = (function() {
         right: 29,
         width: 30,
         height: 25,
-        text: minuteValue,
+        text: '',
         textAlign: 'right',
         color: '#000',
         font: {
@@ -88,13 +92,14 @@ CircleGraph = (function() {
         }
       });
       this.add(min);
+      this._mins.push(min);
       m = Ti.UI.createLabel({
         top: top,
         left: 293,
         width: 100,
         height: 25,
         text: 'm',
-        color: '#CCCCCC',
+        color: '#333333',
         shadowColor: "#FFFFFF",
         shadowOffset: {
           x: 0,
@@ -123,32 +128,66 @@ CircleGraph = (function() {
     });
     this.webview = Ti.UI.createWebView({
       backgroundColor: 0,
+      loading: true,
       top: 175,
       left: 10,
-      width: 160,
-      height: 160
+      width: 140,
+      height: 140
     });
+    this.circleCover = Ti.UI.createView({
+      top: 178,
+      left: 12,
+      width: 140,
+      height: 140,
+      backgroundImage: global.getImagePath('Chart/circle')
+    });
+    this.circleCover.setVisible(false);
     this.webview.addEventListener('beforeload', __bind(function(e) {
       info('WEBVIEW beforeload');
+      this.circleCover.setVisible(false);
       this.webviewMsg.text = L('webview_load');
     }, this));
     this.webview.addEventListener('error', __bind(function(e) {
       info('WEBVIEW error');
+      this.circleCover.setVisible(false);
       this.webviewMsg.text = L('webview_error');
     }, this));
     this.webview.addEventListener('load', __bind(function(e) {
       info('WEBVIEW load');
       this.webviewMsg.text = '';
+      this.circleCover.setVisible(true);
     }, this));
     this.webview.addEventListener('touchmove', function() {});
     this.add(this.webview);
     this.add(this.webviewMsg);
+    this.add(this.circleCover);
+  };
+  CircleGraph.prototype._setTime = function(times) {
+    var hourValue, i, left, minuteValue, param, timeTypes, top, value, _len, _len2;
+    timeTypes = Const.TIME_TYPE;
+    for (i = 0, _len = timeTypes.length; i < _len; i++) {
+      value = timeTypes[i];
+      hourValue = Math.floor(times[value] / 60);
+      minuteValue = times[value] - hourValue * 60;
+      left = this._ICON_POS[0];
+      top = this._ICON_POS[1] + i * (this._ICON_SIZE[1] + this._ICON_MARGIN);
+      this._hours[i].text = hourValue;
+      this._mins[i].text = minuteValue;
+    }
     param = "";
     for (i = 0, _len2 = timeTypes.length; i < _len2; i++) {
       value = timeTypes[i];
       param += value + '=' + times[value] + '&';
     }
-    this.webview.url = this._WEBVIEW_URL_CIRCLE + param;
+    info(this.paramCache);
+    info(param);
+    info(this.paramCache === param);
+    if (this.paramCache && this.paramCache === param) {
+      info('use cache');
+    } else {
+      this.paramCache = param;
+      this.webview.url = this._WEBVIEW_URL_CIRCLE + param;
+    }
   };
   CircleGraph.prototype.setEvent = function() {
     return Ti.App.addEventListener(EventType.update_circle_graph, __bind(function(times) {

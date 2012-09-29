@@ -6,6 +6,4 @@ class SAMPLE extends BaseWindow
 	setButton: () ->
 	setEvent: () ->
 	
-		
-		
 exports.SAMPLE = SAMPLE

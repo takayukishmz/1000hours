@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+        <string name="alert_title">Take it one day at a time!</string>
+        <string name="alert_message">Don\'t cheat yourself by adding future dates</string>
+        <string name="webview_load">Loading…</string>
+        <string name="webview_error">Network Error.\n Please try again.</string>
+        <string name="setting_subtitle_tutorial">使い方</string>
+        <string name="setting_subtitle_request">ご意見・ご要望</string>
+        <string name="title_setting">設定</string>
+        <string name="tw_success">tweetに成功しました</string>
+        <string name="tw_error">tweetに失敗しました</string>
+        <string name="tw_default_message">【by 英語1,000時間】英語学習時間が%d時間%d分に達しました。このペースで継続していくと1,000時間達成は%d年%d月%d日ごろです。#1000hours</string>
+
+</resources>

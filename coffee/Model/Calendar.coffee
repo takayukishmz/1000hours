@@ -155,6 +155,8 @@ class Calendar
 		else # when record not exists, insert new record
 			@_insertTimeByType type, time, ymdArr
 		
+		Ti.App.fireEvent EventType.update_selected_day, {timeType:type, day:day, time:time}
+		
 		@setCalendarData()
 		return
 		
@@ -229,27 +231,27 @@ class Calendar
 	
 		
 exports.Calendar = Calendar
-
-
-
-mock = [
-	{day:1, listening:10, writing:0,speaking:0,reading:0}
-	{day:2, listening:10, writing:20,speaking:0,reading:0}
-	{day:3, listening:10, writing:20,speaking:30,reading:0}
-	{day:4, listening:10, writing:20,speaking:30,reading:40}
-	{day:5, listening:10, writing:20,speaking:30,reading:40}
-	{day:6, listening:10, writing:20,speaking:30,reading:0}
-	{day:7, listening:0, writing:0,speaking:30,reading:40}
-	{day:8, listening:10, writing:20,speaking:30,reading:40}
-	{day:9, listening:10, writing:20,speaking:30,reading:40}
-	{day:10, listening:0, writing:0,speaking:0,reading:0}
-	{day:12, listening:10, writing:20,speaking:30,reading:40}
-	{day:15, listening:10, writing:20,speaking:30,reading:40}
-	{day:18, listening:0, writing:20,speaking:0,reading:40}
-	{day:19, listening:0, writing:0,speaking:30,reading:40}
-	{day:21, listening:10, writing:20,speaking:30,reading:40}
-	{day:22, listening:10, writing:20,speaking:0,reading:40}
-	{day:26, listening:0, writing:0,speaking:30,reading:40}
-	{day:29, listening:10, writing:0,speaking:30,reading:0}
-	{day:30, listening:10, writing:20,speaking:30,reading:0}
-]
+# 
+# 
+# 
+# mock = [
+# 	{day:1, listening:10, writing:0,speaking:0,reading:0}
+# 	{day:2, listening:10, writing:20,speaking:0,reading:0}
+# 	{day:3, listening:10, writing:20,speaking:30,reading:0}
+# 	{day:4, listening:10, writing:20,speaking:30,reading:40}
+# 	{day:5, listening:10, writing:20,speaking:30,reading:40}
+# 	{day:6, listening:10, writing:20,speaking:30,reading:0}
+# 	{day:7, listening:0, writing:0,speaking:30,reading:40}
+# 	{day:8, listening:10, writing:20,speaking:30,reading:40}
+# 	{day:9, listening:10, writing:20,speaking:30,reading:40}
+# 	{day:10, listening:0, writing:0,speaking:0,reading:0}
+# 	{day:12, listening:10, writing:20,speaking:30,reading:40}
+# 	{day:15, listening:10, writing:20,speaking:30,reading:40}
+# 	{day:18, listening:0, writing:20,speaking:0,reading:40}
+# 	{day:19, listening:0, writing:0,speaking:30,reading:40}
+# 	{day:21, listening:10, writing:20,speaking:30,reading:40}
+# 	{day:22, listening:10, writing:20,speaking:0,reading:40}
+# 	{day:26, listening:0, writing:0,speaking:30,reading:40}
+# 	{day:29, listening:10, writing:0,speaking:30,reading:0}
+# 	{day:30, listening:10, writing:20,speaking:30,reading:0}
+# ]

@@ -6,7 +6,7 @@ EventType     = require('Event/EventType').EventType
 class CalendarView extends BaseComponent
 	SAMPLE_VALUE : [15,0,30, 0]	
 	TYPE_NAMES :['write','read','listen','speak']
-	WEEK_NAME : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+	WEEK_NAME : ["sun","mon","tue","wed","thu","fri","sat"]
 	constructor :(@_model)->
 		@times = []
 		@boxes  = []
@@ -17,7 +17,7 @@ class CalendarView extends BaseComponent
 		super 
 			contentWidth:'auto'
 			contentHeight:'auto'
-			top:0
+			top:45
 			height:430
 			width:320
 		
@@ -27,10 +27,10 @@ class CalendarView extends BaseComponent
 		@_year.text = @_model.getYear()
 		
 	setView : ()->
-		@_buildDetailPanel()
 		@_buildTitlePanel()
 		@_buildScrollCal()
 		@_buildNormalCal()
+		@_buildDetailPanel()
 			
 	setEvent : ()->
 		#update selected day number 
@@ -65,7 +65,22 @@ class CalendarView extends BaseComponent
 		@alert.setTitle L 'alert_title'
 		@alert.setMessage L 'alert_message'
 		
+		
+		Ti.App.addEventListener EventType.update_selected_day,  (e) =>
+			@updateDetail(e)
+			return
+		
 		return
+		
+	updateDetail : (data) =>
+		if @dayNum.value != data.day
+			return
+		
+		index = @TYPE_NAMES.indexOf data.timeType
+		if index != -1
+			@_updateTime data.time,index
+		return
+		
 	
 	setDetailPanel : (data) ->
 		#validate day.
@@ -73,11 +88,18 @@ class CalendarView extends BaseComponent
 			@alert.show()
 			return
 				
-		@dayNum.text = data.day
+		@dayNum.backgroundImage = global.getImagePath 'Calendar/Date/date_'+data.day
+		@dayNum.value = data.day
+
+		@dayNum.setVisible true
+		@dayNoNum.setVisible false
 		
 		dayIndex = @_model.getDayIndexFromDay data.day
-		@dayName.text = @WEEK_NAME[dayIndex]
+		@dayName.backgroundImage = global.getImagePath 'Calendar/Day/day_'+@WEEK_NAME[dayIndex]
 		
+		@dayName.setVisible true
+		@dayNoName.setVisible false
+				
 		for value, i in @time_types
 			if !data.record or !data.record[@time_types[i]]
 				info i, value
@@ -97,7 +119,6 @@ class CalendarView extends BaseComponent
 		if len <= 35 
 			for	box, i in @boxes
 				data = @_data[i]
-				# info 'normal setData', data.day+" daynum:"+@dayNum.text
 				box.setData data
 				
 		else 
@@ -110,7 +131,7 @@ class CalendarView extends BaseComponent
 	_buildScrollCal : () ->
 		@calScrollBg = Titanium.UI.createScrollView
 			top:45
-			height:300
+			height:298
 			width:320
 			contentWidth:320
 			contentHeight:60*6-6
@@ -258,41 +279,61 @@ class CalendarView extends BaseComponent
 		selectedBox = Titanium.UI.createView
 			left: 0,
 			top: 343,
-			width: 76,
+			width: 72,
 			height: 76,
 			backgroundImage:global.getImagePath 'Calendar/bottom_date'
 			
-		@dayNum = Titanium.UI.createLabel
+		@dayNum = Titanium.UI.createView
+			left: 12.5,
+			top: 12.5,
+			width: 47,
+			height: 32,
+			# text: '0',
+			# color: '#ffffff',
+			# textAlign : 'center'
+			# font: {fontFamily: 'American Typewriter', fontSize: 27}
+			# shadowColor:'#7a4822'
+			# shadowOffset:{x:0,y:-1}
+		
+		@dayNoNum = Titanium.UI.createLabel
 			left: 0,
 			top: 8,
-			width: 76,
+			width: 72,
 			height: 33,
-			text: '0',
-			color: '#333333',
+			text: '-',
+			color: '#ffffff',
 			textAlign : 'center'
 			font: {fontFamily: 'American Typewriter', fontSize: 27}
-			shadowColor:'#ffffff'
-			shadowOffset:{x:0,y:2}
+			shadowColor:'#7a4822'
+			shadowOffset:{x:0,y:-1}
 		
-		@dayName = Titanium.UI.createLabel
+		@dayName = Titanium.UI.createView
+			left: 19
+			top: 55
+			width: 34
+			height: 13
+		
+		@dayNoName = Titanium.UI.createLabel
 			left: 0
-			top: 43
-			width: 76
+			top: 48
+			width: 72
 			height: 21
-			text: 'Mon'
-			color: '#333333',
+			text: '-'
+			color: '#ffffff',
 			textAlign : 'center'
 			font: {fontFamily: 'American Typewriter', fontSize: 15}
-			shadowColor:'#ffffff'
-			shadowOffset:{x:0,y:2}
-			
+			shadowColor:'#7a4822'
+			shadowOffset:{x:0,y:-1}
+		
 		@add selectedBox
-		selectedBox.add @dayNum		
+		selectedBox.add @dayNoNum
+		selectedBox.add @dayNum
+		selectedBox.add @dayNoName
 		selectedBox.add @dayName
-
+		
 		for category, i in @TYPE_NAMES
 			categoryBox = Titanium.UI.createButton
-				left: 76+62*i
+				left: 72+62*i
 				top: 343
 				width: 62
 				height: 76
@@ -310,9 +351,11 @@ class CalendarView extends BaseComponent
 				height:26
 				textAlign :'center'
 				text: ''
-				color:'#333333'
+				color:'#ffffff'
 				minimumFontSize:16
 				font: {fontFamily: 'Helvetica Neue', fontSize:22,fontWeight:"bold"}
+				shadowColor:'#7a4822'
+				shadowOffset:{x:0,y:-1}
 			
 			@times.push @time
 				
@@ -323,41 +366,49 @@ class CalendarView extends BaseComponent
 				height: 20,
 				text: 'min'
 				textAlign :'center'
-				color:'#808080'
+				color:'#ffffff'
 				font: {fontFamily: 'Helvetica Neue', fontSize: 11,fontWeight:"semibold"}
-			
-			icon = Titanium.UI.createLabel
-				right: 2,
-				top: 35,
-				width: 62,
-				height: 10,
-				color:"#808080"
-				textAlign :'right'
-				text: '▼'
-				font: {fontFamily: 'Helvetica', fontSize: 8}
+				shadowColor:'#7a4822'
+				shadowOffset:{x:0,y:-1}
+				
+			# icon = Titanium.UI.createLabel
+			# 	right: 2,
+			# 	top: 35,
+			# 	width: 62,
+			# 	height: 10,
+			# 	color:"#ffffff"
+			# 	textAlign :'right'
+			# 	text: '▼'
+			# 	font: {fontFamily: 'Helvetica', fontSize: 8}
+			# 	shadowColor:'#7a4822'
+			# 	shadowOffset:{x:0,y:-1}
 				
 			@add categoryBox
 			
 			categoryBox.add @time
 			
 			categoryBox.add @categoryLebel
-			categoryBox.add icon
+			# categoryBox.add icon
 			
 			categoryBox.addEventListener 'click', (e) =>			
 				# info 'categoryBox click',JSON.stringify e
 				
 				data = 
 					timeType : e.source.timeType.toLowerCase()
-					day : @dayNum.text
+					day : @dayNum.value
 					time : @times[e.source.index].text
 				
 				Ti.App.fireEvent EventType.open_input, data
 				return
 		return			
 	
+	
 	resetDetail : () =>
-		@dayNum.text = '-'
-		@dayName.text = '-'
+		@dayNum.value = '-'
+		@dayNum.setVisible false
+		@dayNoNum.setVisible true
+		@dayName.setVisible false
+		@dayNoName.setVisible true
 		for time in @times
 			time.text = '-'
 		

@@ -5,5 +5,6 @@ exports.EventType = {
   "set_unselect": "04set_unselect",
   "update_cal": "05update_cal",
   "update_bar_graph": "06update_bar_graph",
-  "update_circle_graph": "07update_circle_graph"
+  "update_circle_graph": "07update_circle_graph",
+  "update_selected_day": "08update_selected_day"
 };

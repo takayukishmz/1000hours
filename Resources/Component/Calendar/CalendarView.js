@@ -15,7 +15,7 @@ CalendarView = (function() {
   __extends(CalendarView, BaseComponent);
   CalendarView.prototype.SAMPLE_VALUE = [15, 0, 30, 0];
   CalendarView.prototype.TYPE_NAMES = ['write', 'read', 'listen', 'speak'];
-  CalendarView.prototype.WEEK_NAME = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  CalendarView.prototype.WEEK_NAME = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   function CalendarView(_model) {
     this._model = _model;
     this._updateTime = __bind(this._updateTime, this);
@@ -23,6 +23,7 @@ CalendarView = (function() {
     this._buildDetailPanel = __bind(this._buildDetailPanel, this);
     this.switchCal = __bind(this.switchCal, this);
     this.updateCal = __bind(this.updateCal, this);
+    this.updateDetail = __bind(this.updateDetail, this);
     this.times = [];
     this.boxes = [];
     this.boxesScroll = [];
@@ -32,7 +33,7 @@ CalendarView = (function() {
     CalendarView.__super__.constructor.call(this, {
       contentWidth: 'auto',
       contentHeight: 'auto',
-      top: 0,
+      top: 45,
       height: 430,
       width: 320
     });
@@ -42,10 +43,10 @@ CalendarView = (function() {
     this._year.text = this._model.getYear();
   }
   CalendarView.prototype.setView = function() {
-    this._buildDetailPanel();
     this._buildTitlePanel();
     this._buildScrollCal();
-    return this._buildNormalCal();
+    this._buildNormalCal();
+    return this._buildDetailPanel();
   };
   CalendarView.prototype.setEvent = function() {
     Ti.App.addEventListener(EventType.click_box, __bind(function(params) {
@@ -73,6 +74,19 @@ CalendarView = (function() {
     this.alert = Titanium.UI.createAlertDialog();
     this.alert.setTitle(L('alert_title'));
     this.alert.setMessage(L('alert_message'));
+    Ti.App.addEventListener(EventType.update_selected_day, __bind(function(e) {
+      this.updateDetail(e);
+    }, this));
+  };
+  CalendarView.prototype.updateDetail = function(data) {
+    var index;
+    if (this.dayNum.value !== data.day) {
+      return;
+    }
+    index = this.TYPE_NAMES.indexOf(data.timeType);
+    if (index !== -1) {
+      this._updateTime(data.time, index);
+    }
   };
   CalendarView.prototype.setDetailPanel = function(data) {
     var dayIndex, i, time, value, _len, _ref;
@@ -80,9 +94,14 @@ CalendarView = (function() {
       this.alert.show();
       return;
     }
-    this.dayNum.text = data.day;
+    this.dayNum.backgroundImage = global.getImagePath('Calendar/Date/date_' + data.day);
+    this.dayNum.value = data.day;
+    this.dayNum.setVisible(true);
+    this.dayNoNum.setVisible(false);
     dayIndex = this._model.getDayIndexFromDay(data.day);
-    this.dayName.text = this.WEEK_NAME[dayIndex];
+    this.dayName.backgroundImage = global.getImagePath('Calendar/Day/day_' + this.WEEK_NAME[dayIndex]);
+    this.dayName.setVisible(true);
+    this.dayNoName.setVisible(false);
     _ref = this.time_types;
     for (i = 0, _len = _ref.length; i < _len; i++) {
       value = _ref[i];
@@ -119,7 +138,7 @@ CalendarView = (function() {
     var box, cols, i, rows;
     this.calScrollBg = Titanium.UI.createScrollView({
       top: 45,
-      height: 300,
+      height: 298,
       width: 320,
       contentWidth: 320,
       contentHeight: 60 * 6 - 6
@@ -267,7 +286,7 @@ CalendarView = (function() {
     }
   };
   CalendarView.prototype._buildDetailPanel = function() {
-    var category, categoryBox, i, icon, selectedBox, _len, _ref;
+    var category, categoryBox, i, selectedBox, _len, _ref;
     selectedBox = Titanium.UI.createView({
       left: 0,
       top: 343,
@@ -275,44 +294,58 @@ CalendarView = (function() {
       height: 76,
       backgroundImage: global.getImagePath('Calendar/bottom_date')
     });
-    this.dayNum = Titanium.UI.createLabel({
+    this.dayNum = Titanium.UI.createView({
+      left: 12.5,
+      top: 12.5,
+      width: 47,
+      height: 32
+    });
+    this.dayNoNum = Titanium.UI.createLabel({
       left: 0,
       top: 8,
-      width: 76,
+      width: 72,
       height: 33,
-      text: '0',
-      color: '#333333',
+      text: '-',
+      color: '#ffffff',
       textAlign: 'center',
       font: {
         fontFamily: 'American Typewriter',
         fontSize: 27
       },
-      shadowColor: '#ffffff',
+      shadowColor: '#7a4822',
       shadowOffset: {
         x: 0,
-        y: 2
+        y: -1
       }
     });
-    this.dayName = Titanium.UI.createLabel({
+    this.dayName = Titanium.UI.createView({
+      left: 19,
+      top: 55,
+      width: 34,
+      height: 13
+    });
+    this.dayNoName = Titanium.UI.createLabel({
       left: 0,
-      top: 43,
-      width: 76,
+      top: 48,
+      width: 72,
       height: 21,
-      text: 'Mon',
-      color: '#333333',
+      text: '-',
+      color: '#ffffff',
       textAlign: 'center',
       font: {
         fontFamily: 'American Typewriter',
         fontSize: 15
       },
-      shadowColor: '#ffffff',
+      shadowColor: '#7a4822',
       shadowOffset: {
         x: 0,
-        y: 2
+        y: -1
       }
     });
     this.add(selectedBox);
+    selectedBox.add(this.dayNoNum);
     selectedBox.add(this.dayNum);
+    selectedBox.add(this.dayNoName);
     selectedBox.add(this.dayName);
     _ref = this.TYPE_NAMES;
     for (i = 0, _len = _ref.length; i < _len; i++) {
@@ -334,12 +367,17 @@ CalendarView = (function() {
         height: 26,
         textAlign: 'center',
         text: '',
-        color: '#333333',
+        color: '#ffffff',
         minimumFontSize: 16,
         font: {
           fontFamily: 'Helvetica Neue',
           fontSize: 22,
           fontWeight: "bold"
+        },
+        shadowColor: '#7a4822',
+        shadowOffset: {
+          x: 0,
+          y: -1
         }
       });
       this.times.push(this.time);
@@ -350,35 +388,26 @@ CalendarView = (function() {
         height: 20,
         text: 'min',
         textAlign: 'center',
-        color: '#808080',
+        color: '#ffffff',
         font: {
           fontFamily: 'Helvetica Neue',
           fontSize: 11,
           fontWeight: "semibold"
-        }
-      });
-      icon = Titanium.UI.createLabel({
-        right: 2,
-        top: 35,
-        width: 62,
-        height: 10,
-        color: "#808080",
-        textAlign: 'right',
-        text: '▼',
-        font: {
-          fontFamily: 'Helvetica',
-          fontSize: 8
+        },
+        shadowColor: '#7a4822',
+        shadowOffset: {
+          x: 0,
+          y: -1
         }
       });
       this.add(categoryBox);
       categoryBox.add(this.time);
       categoryBox.add(this.categoryLebel);
-      categoryBox.add(icon);
       categoryBox.addEventListener('click', __bind(function(e) {
         var data;
         data = {
           timeType: e.source.timeType.toLowerCase(),
-          day: this.dayNum.text,
+          day: this.dayNum.value,
           time: this.times[e.source.index].text
         };
         Ti.App.fireEvent(EventType.open_input, data);
@@ -387,8 +416,11 @@ CalendarView = (function() {
   };
   CalendarView.prototype.resetDetail = function() {
     var time, _i, _len, _ref;
-    this.dayNum.text = '-';
-    this.dayName.text = '-';
+    this.dayNum.value = '-';
+    this.dayNum.setVisible(false);
+    this.dayNoNum.setVisible(true);
+    this.dayName.setVisible(false);
+    this.dayNoName.setVisible(true);
     _ref = this.times;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       time = _ref[_i];

@@ -13,7 +13,15 @@ class Chart
 			listen:0
 			speak:0
 		
+		
 	setGraphData : () ->
+		@_times = 
+			write:0
+			read:0
+			listen:0
+			speak:0
+		
+		Ti.App.fireEvent 'hoge'		
 		@_setTimeData()
 		@_setBarGragh()
 		@_setCirCleGraph()
@@ -27,7 +35,7 @@ class Chart
 			@_times.listen += i.listen if i.listen
 			@_times.speak += i.speak if i.speak
 			
-		info 'ChartModel#_setTimeData', JSON.stringify @_times
+		# info 'ChartModel#_setTimeData', JSON.stringify @_times
 		return
 	
 	getTotalTime : () =>
