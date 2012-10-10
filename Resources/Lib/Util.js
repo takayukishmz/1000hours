@@ -4,7 +4,6 @@ JsonText = require('Content/Jp/Text').Text;
 util = {};
 exports.getImagePath = function(path) {
   if (path.match(/^Jp/)) {
-    Ti.API.info('jp path');
     path = basePath + path + '.png';
   } else {
     path = basePath + "Common/" + path + '.png';

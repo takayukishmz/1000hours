@@ -10,9 +10,7 @@ class BaseWindow
 		@setView()
 		@setButton()
 		@setEvent()
-		
-
-		
+	
 	setView: () ->
 	setButton: () ->
 	setEvent: () ->
@@ -35,9 +33,9 @@ class BaseWindow
 			@win.add @header
 		
 		@header.backgroundImage = path
-
+		
 		return
-
+	
 	setHeaderTitleImage : (param) ->
 		titleImg = Ti.UI.createView param
 		@win.add titleImg

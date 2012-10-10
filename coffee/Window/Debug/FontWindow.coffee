@@ -22,7 +22,6 @@ class FontWindow extends BaseWindow
 	loadListView : () =>
 		data = []
 		for i in fontArr
-			info i
 			data.push @createListView(i)
 			@tableview.data = data
 		

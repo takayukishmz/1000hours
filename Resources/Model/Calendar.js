@@ -45,7 +45,6 @@ Calendar = (function() {
   };
   Calendar.prototype.setMonthlyData = function() {
     var data, i, _i, _len;
-    info('setMonthlyData');
     this._reference = {};
     data = db.getMonthlyData(this._year, this._month);
     for (_i = 0, _len = data.length; _i < _len; _i++) {
@@ -66,20 +65,22 @@ Calendar = (function() {
     weekIndex = this.getStartDay();
     monthLength = this.getMonthLength(this._month);
     len = weekIndex + monthLength;
-    info('len', len);
     return weekIndex + monthLength;
   };
   Calendar.prototype.setCalendarData = function() {
     var blanckNum, calArr, day, i, lastDay, max, monthLength, record, weekIndex;
     this.setMonthlyData();
-    monthLength = this.getMonthLength(this._month);
+    this.setTodayRecord();
     calArr = [];
+    monthLength = this.getMonthLength(this._month);
     for (i = 1; 1 <= monthLength ? i <= monthLength : i >= monthLength; 1 <= monthLength ? i++ : i--) {
       record = this._reference[i];
       calArr.push({
+        isSelected: this._selectedDay === i,
         day: i,
         show: true,
-        record: record
+        record: record,
+        isToday: this.isToday(i)
       });
     }
     weekIndex = this.getStartDay();
@@ -101,11 +102,35 @@ Calendar = (function() {
       });
     }
     this._calData = calArr;
-    info('#setCalendarData# month', this._month + "year:" + this._year + "weekIndex:" + weekIndex);
-    info('setCalendarData', JSON.stringify(calArr));
     Ti.App.fireEvent(EventType.update_cal, {
       "data": this._calData
     });
+  };
+  Calendar.prototype.setTodayRecord = function() {
+    var date, day, month, record, year;
+    date = new Date();
+    year = date.getFullYear();
+    month = date.getMonth() + 1;
+    day = date.getDate();
+    record = db.getSelectOne(year, month, day);
+    this._today = {
+      year: year,
+      month: month,
+      day: day,
+      record: record
+    };
+  };
+  Calendar.prototype.getTodayRecord = function() {
+    var data;
+    if (!this._today) {
+      this.setTodayRecord();
+    }
+    data = {
+      day: this._today.day,
+      show: true,
+      record: this._today.record
+    };
+    return data;
   };
   Calendar.prototype.getWeekNameArray = function() {
     return this.WEEK_NAME;
@@ -125,6 +150,7 @@ Calendar = (function() {
     this._setMonthLength();
   };
   Calendar.prototype.setNextMonth = function() {
+    this._selectedDay = 0;
     if (this._month === 12) {
       this._month = 1;
       this._year++;
@@ -133,6 +159,7 @@ Calendar = (function() {
     }
   };
   Calendar.prototype.setBeforeMonth = function() {
+    this._selectedDay = 0;
     if (this._month === 1) {
       this._month = 12;
       this._year--;
@@ -147,7 +174,6 @@ Calendar = (function() {
     var row, time, ymdArr;
     time = minute + this._convertToMinute(hour);
     ymdArr = [this._year, this._month, day];
-    info('updateTimeData', time);
     if (this._reference[day]) {
       row = db.updateBy(type, time, ymdArr);
     } else {
@@ -166,9 +192,7 @@ Calendar = (function() {
     types = Const.TIME_TYPE;
     for (index = 0, _len = types.length; index < _len; index++) {
       key = types[index];
-      info(key);
       if (key === type) {
-        info('match');
         values[index] = value;
       } else {
         values[index] = 0;
@@ -220,6 +244,12 @@ Calendar = (function() {
       return false;
     }
     return true;
+  };
+  Calendar.prototype.isToday = function(day) {
+    if (this._today.year === this._year && this._today.month === this._month && this._today.day === day) {
+      return true;
+    }
+    return false;
   };
   Calendar.prototype.getDayIndexFromDay = function(day) {
     var d;

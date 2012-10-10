@@ -272,8 +272,9 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod, par
 
         window = Ti.UI.createWindow({
             modal: true,
-            fullscreen: true
+            // fullscreen: true
         });
+		window.hideNavBar()
         var transform = Ti.UI.create2DMatrix().scale(0);
         view = Ti.UI.createView({
             top: 5,
@@ -287,30 +288,33 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod, par
             zIndex: -1,
             transform: transform
         });
-        closeLabel = Ti.UI.createLabel({
+        closeLabel = Ti.UI.createButton({
             textAlign: 'right',
             font: {
                 fontWeight: 'bold',
-                fontSize: '12pt'
+                fontSize: '16pt'
             },
             text: '(X)',
             top: 10,
-            right: 12,
-            height: 14
+            left: 12,
+			width: 59,
+            height: 20,
+			backgroundImage : global.getImagePath('Chart/Share/btn_tw_close'),
+			SelectedBackgroundImage : global.getImagePath('Chart/Share/btn_tw_close_dw')
         });
-
+		var margin = 10
         webView = Ti.UI.createWebView({
             url: pUrl,
-            top: closeLabel.height + closeLabel.top,
+            top: closeLabel.height + margin + closeLabel.top,
             width: '97%',
-            height: view.height - closeLabel.height - closeLabel.top - view.borderWidth * 4,
+            height: view.height - closeLabel.height - margin - closeLabel.top - view.borderWidth * 4,
             autoDetect: [Ti.UI.AUTODETECT_NONE]
             });
         if (Titanium.version < '1.7.0') {
             view.width = 310;
             view.height = 450;
             webView.width = 300;
-            webView.height = view.height - closeLabel.height - closeLabel.top - view.borderWidth * 4;
+            webView.height = view.height - closeLabel.height - margin - closeLabel.top - view.borderWidth * 4;
         }
 
         Ti.API.debug('Setting:[' + Ti.UI.AUTODETECT_NONE + ']');

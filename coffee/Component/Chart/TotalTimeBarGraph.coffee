@@ -6,7 +6,7 @@ EventType = require('Event/EventType').EventType
 class TotalTimeBarGraph extends BaseComponent
 	_BAR_RECT : 
 		left:15
-		top:100
+		top:103
 		width:290
 		height:45
 
@@ -18,12 +18,10 @@ class TotalTimeBarGraph extends BaseComponent
 		@_bar.setValue(44, Const.MAX_HOUR)
 		
 		@setMarkPosition()
-			
+		
 		@add @_bar.getNodeView()
 		
 	setView: () ->
-		
-		
 		bg = Ti.UI.createView
 			left:0
 			top:5
@@ -55,9 +53,8 @@ class TotalTimeBarGraph extends BaseComponent
 			shadowColor:"#FFFFFF"
 			shadowOffset:{x:0,y:2}
 			font: {fontFamily: 'Helvetica Neue', fontSize: 35,fontWeight:"bold"}
-				
-		@add @hour
 		
+		@add @hour
 		
 		h = Ti.UI.createLabel
 			left:105
@@ -136,15 +133,42 @@ class TotalTimeBarGraph extends BaseComponent
 		@add hourUnit
 		
 		
-		@mark = Ti.UI.createLabel
+		@goal = Ti.UI.createView
+			left:290
+			top :89
+			width :17
+			height:16
+			# text : '▼'
+			# color: '#000'
+			# font : {fontFamily: 'Helvetica Neue', fontSize:10}
+			backgroundImage : global.getImagePath 'Chart/mark_flag'
+			SelectedBackgroundImage : global.getImagePath 'Chart/mark_flag_dw'
+		
+		@add @goal
+		
+		@goalAchieve = Ti.UI.createView
+			left:281
+			top :87
+			width :26
+			height:18
+			backgroundImage : global.getImagePath 'Chart/mark_goal'
+			SelectedBackgroundImage : global.getImagePath 'Chart/mark_goal_dw'
+		
+		@add @goalAchieve
+		
+		@goalAchieve.setVisible false
+		
+		@mark = Ti.UI.createView
 			left:25
-			top :88
-			width :15
+			top :91
+			width :20
 			height:15
-			text : '▼'
-			color: '#000'
-			font : {fontFamily: 'Helvetica Neue', fontSize:10}
-			
+			# text : '▼'
+			# color: '#000'
+			# font : {fontFamily: 'Helvetica Neue', fontSize:10}
+			backgroundImage : global.getImagePath 'Chart/mark_turtle'
+			SelectedBackgroundImage : global.getImagePath 'Chart/mark_turtle_dw'
+		
 		@add @mark
 		
 		
@@ -156,13 +180,25 @@ class TotalTimeBarGraph extends BaseComponent
 			@setMarkPosition()
 			@hour.text = e.hour
 			@minute.text = e.minute
-			
+		
 	setButton:() ->
 		
-	
+		
 	setMarkPosition : () =>
-		barPosX = @_BAR_RECT.left+3+@_bar.getCoverWitdh()
+		barPosX = @_BAR_RECT.left+@_bar.getCoverWitdh()-7
 		@mark.left = barPosX
+		
+		ratio = @_bar.getRatio()
+		
+		if ratio >= 1
+			@goalAchieve.setVisible true
+			@goal.setVisible false
+			@mark.setVisible false
+		else 
+			@goalAchieve.setVisible false
+			@goal.setVisible true
+			@mark.setVisible true
+		
 		return
 	
 	

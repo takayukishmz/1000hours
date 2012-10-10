@@ -28,6 +28,7 @@ InputTimeWindow = (function() {
     this.minute = minute;
     this.day = day;
     this.setButton = __bind(this.setButton, this);
+    this.setEvent = __bind(this.setEvent, this);
     this.setView = __bind(this.setView, this);
     this.params = {
       backgroundColor: 'red',
@@ -47,7 +48,8 @@ InputTimeWindow = (function() {
       height: 270
     });
     this.picker = Ti.UI.createPicker({
-      left: 100
+      left: 100,
+      type: Ti.UI.PICKER_TYPE_COUNT_DOWN_TIMER
     });
     this.picker.selectionIndicator = true;
     hourColumn = Ti.UI.createPickerColumn();
@@ -68,11 +70,12 @@ InputTimeWindow = (function() {
       });
       minuteColumn.addRow(row);
     }
-    this.picker.add([hourColumn, minuteColumn]);
-    this.win.add(this.picker);
+    this.picker.addEventListener('change', function(e) {
+      info(e);
+    });
   };
   InputTimeWindow.prototype.setEvent = function() {
-    return this.win.addEventListener('open', __bind(function() {
+    this.win.addEventListener('open', __bind(function() {
       this.picker.setSelectedRow(0, this.hour, true);
       this.picker.setSelectedRow(1, this.minute, true);
     }, this));

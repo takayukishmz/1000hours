@@ -34,13 +34,16 @@ CalendarView = (function() {
       contentWidth: 'auto',
       contentHeight: 'auto',
       top: 45,
+      left: 0,
       height: 430,
       width: 320
     });
     this.switchCal();
+    this.setDetailPanel(this._model.getTodayRecord());
     this._model.setCalendarData();
     this._title.text = this._model.getMonthName();
     this._year.text = this._model.getYear();
+    return;
   }
   CalendarView.prototype.setView = function() {
     this._buildTitlePanel();
@@ -53,7 +56,6 @@ CalendarView = (function() {
       this.setDetailPanel(params);
     }, this));
     Ti.App.addEventListener(EventType.update_cal, __bind(function(e) {
-      info('update_cal', JSON.stringify(e.data));
       this._data = e.data;
       this.updateCal();
     }, this));
@@ -77,6 +79,31 @@ CalendarView = (function() {
     Ti.App.addEventListener(EventType.update_selected_day, __bind(function(e) {
       this.updateDetail(e);
     }, this));
+    Ti.App.addEventListener(EventType.set_unselect, __bind(function(e) {
+      if (this.isNormalBg) {
+        return this.toggleBoxes(this.boxes, e.day);
+      } else if (this.isScrollBg) {
+        return this.toggleBoxes(this.boxesScroll, e.day);
+      }
+    }, this));
+  };
+  CalendarView.prototype.toggleBoxes = function(boxes, day) {
+    var box, _i, _len;
+    for (_i = 0, _len = boxes.length; _i < _len; _i++) {
+      box = boxes[_i];
+      if (box.day.text === day && box._data.show) {
+        box.toggle(true);
+      } else if (box.getState()) {
+        box.toggle(false);
+      }
+    }
+  };
+  CalendarView.prototype.unSelectAll = function(boxes) {
+    var box, _i, _len;
+    for (_i = 0, _len = boxes.length; _i < _len; _i++) {
+      box = boxes[_i];
+      box.toggle(false);
+    }
   };
   CalendarView.prototype.updateDetail = function(data) {
     var index;
@@ -106,7 +133,6 @@ CalendarView = (function() {
     for (i = 0, _len = _ref.length; i < _len; i++) {
       value = _ref[i];
       if (!data.record || !data.record[this.time_types[i]]) {
-        info(i, value);
         this.times[i].text = 0;
         continue;
       }
@@ -129,7 +155,6 @@ CalendarView = (function() {
       _ref2 = this.boxesScroll;
       for (i = 0, _len2 = _ref2.length; i < _len2; i++) {
         box = _ref2[i];
-        info('scroll setData', i);
         box.setData(this._data[i]);
       }
     }
@@ -195,6 +220,7 @@ CalendarView = (function() {
       this.add(this.calBg);
       this.isNormalBg = true;
       if (this.isScrollBg) {
+        this.unSelectAll(this.boxesScroll);
         this.remove(this.calScrollBg);
         this.isScrollBg = false;
       }
@@ -202,6 +228,7 @@ CalendarView = (function() {
       this.add(this.calScrollBg);
       this.isScrollBg = true;
       if (this.isNormalBg) {
+        this.unSelectAll(this.boxes);
         this.remove(this.calBg);
         this.isNormalBg = false;
       }
@@ -214,7 +241,7 @@ CalendarView = (function() {
       left: 30,
       width: 150,
       height: 24,
-      text: 'June',
+      text: '',
       color: '#383838',
       textAlign: 'right',
       font: {
@@ -225,7 +252,7 @@ CalendarView = (function() {
     });
     this.add(this._title);
     this._year = Ti.UI.createLabel({
-      top: 6,
+      top: 10,
       left: 185,
       width: 40,
       height: 16,
@@ -278,7 +305,7 @@ CalendarView = (function() {
         shadowColor: '#FFFFFF',
         textAlign: 'center',
         font: {
-          fontFamily: 'Helvetica Neue',
+          fontFamily: 'American Typewriter',
           fontSize: 12
         }
       });
@@ -405,6 +432,9 @@ CalendarView = (function() {
       categoryBox.add(this.categoryLebel);
       categoryBox.addEventListener('click', __bind(function(e) {
         var data;
+        if (this.times[e.source.index].text === '-') {
+          return;
+        }
         data = {
           timeType: e.source.timeType.toLowerCase(),
           day: this.dayNum.value,
@@ -428,25 +458,10 @@ CalendarView = (function() {
     }
   };
   CalendarView.prototype._updateTime = function(time, index) {
-    if (!time) {
+    if (time < 0 || time === void 0) {
       return;
     }
     this.times[index].text = time;
-    if (time.toString().length > 3) {
-      info(JSON.stringify(this.times[index].font.fontSize));
-      this.times[index].font = {
-        fontFamily: 'Helvetica Neue',
-        fontSize: 18,
-        fontWeight: "bold"
-      };
-    } else {
-      info(JSON.stringify(this.times[index].font.fontSize, 'short'));
-      this.times[index].font = {
-        fontFamily: 'Helvetica Neue',
-        fontSize: 22,
-        fontWeight: "bold"
-      };
-    }
   };
   return CalendarView;
 })();

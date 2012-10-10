@@ -49,6 +49,9 @@ class BarMeter extends BaseComponent
 		@maxValue = max
 		return 
 	
+	getRatio : () =>
+		return @currentValue / @maxValue
+	
 	_ajustValue : (ratio) ->
 		if ratio > 1 
 			ratio = 1

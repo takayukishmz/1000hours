@@ -6,9 +6,9 @@ class CircleGraph extends BaseComponent
 	
 	_ICON_SIZE:[35,29]
 	_ICON_MARGIN:10
-	_ICON_POS:[185,180]
+	_ICON_POS:[180,180]
 
-	_WEBVIEW_URL_CIRCLE :"https://dl.dropbox.com/u/15300991/circle.html?"
+	_WEBVIEW_URL_CIRCLE :"https://1000hours.site44.com?"
 	constructor : () ->
 		@_hours = []
 		@_mins = []
@@ -37,7 +37,7 @@ class CircleGraph extends BaseComponent
 			
 			hour = Ti.UI.createLabel
 				top: top
-				right:68
+				left:217
 				width:30
 				height:25
 				text: ''
@@ -50,7 +50,7 @@ class CircleGraph extends BaseComponent
 			
 			h = Ti.UI.createLabel
 				top: top
-				left:255
+				left:250
 				width:30
 				height:25
 				text: 'h.'
@@ -63,7 +63,7 @@ class CircleGraph extends BaseComponent
 			
 			min = Ti.UI.createLabel
 				top: top
-				right:29
+				left:256
 				width:30
 				height:25
 				text: ''	
@@ -76,7 +76,7 @@ class CircleGraph extends BaseComponent
 			
 			m = Ti.UI.createLabel
 				top: top
-				left:293
+				left:288
 				width:100
 				height:25
 				text: 'm'
@@ -104,7 +104,7 @@ class CircleGraph extends BaseComponent
 			# borderColor :0 
 			# scalesPageToFit:true
 			# touchEnabled: false
-			loading:true
+			# loading:true
 			top:175
 			left:10
 			width:140
@@ -142,6 +142,8 @@ class CircleGraph extends BaseComponent
 		@webview.addEventListener 'touchmove', () ->
 			return
 		
+		@webview.url = @_WEBVIEW_URL_CIRCLE
+		
 		@add @webview
 		@add @webviewMsg
 		@add @circleCover
@@ -164,9 +166,9 @@ class CircleGraph extends BaseComponent
 		for value, i in timeTypes
 			param += value+'='+times[value]+'&'
 		
-		info @paramCache
-		info param
-		info @paramCache == param
+		# info @paramCache
+		# info param
+		# info @paramCache == param
 		if @paramCache and @paramCache == param
 			info 'use cache'
 		else 

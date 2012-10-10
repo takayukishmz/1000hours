@@ -30,7 +30,6 @@ FontWindow = (function() {
     data = [];
     for (_i = 0, _len = fontArr.length; _i < _len; _i++) {
       i = fontArr[_i];
-      info(i);
       data.push(this.createListView(i));
       this.tableview.data = data;
     }

@@ -6,6 +6,7 @@ class Calendar
 	MONTH_LENGTH : [31,28,31,30,31,30,31,31,30,31,30,31]
 	MONTH_NAME : ['January','February','March','April','May',"June",'July','August','September','October','November','December']
 	WEEK_NAME : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+	
 	constructor : () ->
 		@_reference = {}
 		@_selectedMonth = null
@@ -14,6 +15,7 @@ class Calendar
 		@_year = null
 		@_month = null
 		@_calData = []
+		# @_today = {}
 	
 	
 	getMonthName : () =>
@@ -28,20 +30,18 @@ class Calendar
 	
 	getSelectedDay : () ->
 		return @_selectedDay
-		
+	
 	getMockData : () ->
 		@_reference = {}
 		for i in mock
 			@_reference[i.day] = i
 		return @_reference
-		
+	
 	setMonthlyData : () ->
-		info 'setMonthlyData'
 		@_reference = {}
 		data = db.getMonthlyData @_year, @_month
 		for i in data
-			@_reference[i.day] = i
-		
+			@_reference[i.day] = i	
 		return
 	
 	_setMonthLength : () ->
@@ -56,21 +56,24 @@ class Calendar
 		weekIndex = @getStartDay()
 		monthLength = @getMonthLength @_month
 		len = weekIndex+monthLength
-		info 'len',len
 		
 		return weekIndex+monthLength
 		
 	setCalendarData : () =>
 		@setMonthlyData()
-		monthLength = @getMonthLength @_month
+		@setTodayRecord()
 		calArr = []
+		monthLength = @getMonthLength @_month
 		
 		for	i in [1..monthLength]
 			record = @_reference[i]
+			
 			calArr.push
+				isSelected: @_selectedDay == i
 				day: i
 				show:true
 				record:record
+				isToday : @isToday i
 		
 		weekIndex = @getStartDay()
 		lastDay = @getMonthLength @_month
@@ -92,11 +95,37 @@ class Calendar
 				show:false
 		
 		@_calData = calArr
-		info '#setCalendarData# month', @_month+"year:"+@_year+"weekIndex:"+weekIndex
-		info 'setCalendarData',JSON.stringify calArr
+		# info '#setCalendarData# month', @_month+"year:"+@_year+"weekIndex:"+weekIndex
+		# info 'setCalendarData',JSON.stringify calArr
 		
 		Ti.App.fireEvent EventType.update_cal, {"data": @_calData }
 		return
+		
+	setTodayRecord : () ->
+		date = new Date()
+		year = date.getFullYear()
+		month = date.getMonth()+1		
+		day = date.getDate()
+		record = db.getSelectOne year, month, day
+				
+		@_today = 
+			year : year
+			month : month
+			day : day
+			record : record
+		
+		return
+		
+	getTodayRecord : () ->
+		if !@_today
+			@setTodayRecord()
+		
+		data = 
+			day: @_today.day
+			show:true
+			record:@_today.record
+		
+		return data
 		
 	getWeekNameArray : () ->
 		return @WEEK_NAME
@@ -105,12 +134,6 @@ class Calendar
 		return @_monthLength
 		
 	getStartDay　: () ->
-		# days = 0
-		# for i in @_monthLength
-		# 	days+=i
-		# 
-		# return Math.floor((@_year*365.2425+days)%7) #その月の開始曜日を取得
-		
 		d = new Date(@_year+"/"+@_month+"/"+1)
 		return d.getDay()
 	
@@ -124,6 +147,7 @@ class Calendar
 		return
 		
 	setNextMonth:() =>
+		@_selectedDay = 0
 		if @_month == 12
 			@_month = 1
 			@_year++
@@ -133,6 +157,7 @@ class Calendar
 		return
 		
 	setBeforeMonth:() =>
+		@_selectedDay = 0
 		if @_month == 1
 			@_month = 12
 			@_year--
@@ -148,7 +173,7 @@ class Calendar
 	updateTimeData : (type,hour, minute, day) =>
 		time = minute + @_convertToMinute hour
 		ymdArr = [@_year,@_month,day]
-		info 'updateTimeData', time
+		# info 'updateTimeData', time
 		
 		if @_reference[day] 	#update 
 			row = db.updateBy type,time,ymdArr
@@ -165,9 +190,7 @@ class Calendar
 		types = Const.TIME_TYPE
 		
 		for key, index in types
-			info key
 			if key == type
-				info 'match'
 				values[index] = value
 			else
 				values[index] = 0
@@ -224,34 +247,17 @@ class Calendar
 		
 		return true
 	
+	isToday : (day) ->
+		if @_today.year == @_year and @_today.month == @_month and @_today.day == day
+			return true
+			
+		return false
+	
 	getDayIndexFromDay : (day) =>
 		d = new Date(@_year+"/"+@_month+"/"+day)
 		return d.getDay()
 	
 	
+	
 		
 exports.Calendar = Calendar
-# 
-# 
-# 
-# mock = [
-# 	{day:1, listening:10, writing:0,speaking:0,reading:0}
-# 	{day:2, listening:10, writing:20,speaking:0,reading:0}
-# 	{day:3, listening:10, writing:20,speaking:30,reading:0}
-# 	{day:4, listening:10, writing:20,speaking:30,reading:40}
-# 	{day:5, listening:10, writing:20,speaking:30,reading:40}
-# 	{day:6, listening:10, writing:20,speaking:30,reading:0}
-# 	{day:7, listening:0, writing:0,speaking:30,reading:40}
-# 	{day:8, listening:10, writing:20,speaking:30,reading:40}
-# 	{day:9, listening:10, writing:20,speaking:30,reading:40}
-# 	{day:10, listening:0, writing:0,speaking:0,reading:0}
-# 	{day:12, listening:10, writing:20,speaking:30,reading:40}
-# 	{day:15, listening:10, writing:20,speaking:30,reading:40}
-# 	{day:18, listening:0, writing:20,speaking:0,reading:40}
-# 	{day:19, listening:0, writing:0,speaking:30,reading:40}
-# 	{day:21, listening:10, writing:20,speaking:30,reading:40}
-# 	{day:22, listening:10, writing:20,speaking:0,reading:40}
-# 	{day:26, listening:0, writing:0,speaking:30,reading:40}
-# 	{day:29, listening:10, writing:0,speaking:30,reading:0}
-# 	{day:30, listening:10, writing:20,speaking:30,reading:0}
-# ]

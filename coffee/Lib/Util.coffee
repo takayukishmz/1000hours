@@ -5,7 +5,7 @@ util = {}
 
 exports.getImagePath = (path) ->
 	if path.match /^Jp/
-		Ti.API.info 'jp path'
+		# Ti.API.info 'jp path'
 		path = basePath + path+'.png'
 	else
 		path = basePath + "Common/" + path+'.png'
@@ -28,6 +28,24 @@ exports.getText = (key) ->
 		return JsonText[key]
 	
 	return ""
+
+# deviceWidth = 320
+# ratio = 2
+# exports.responsiveWidth = (value) ->
+# 	if value < 0 or value == undefined
+# 		info 'responsiveWidth Error:invalid value'
+# 	return value * ratio	
+# 	# return ((value/deviceWidth)*100)+'%'
+# 
+# deviceHeight = 480
+# 
+# exports.responsiveHeight = (value) ->
+# 	if value < 0 or value == undefined
+# 		info 'responsiveHeight Error:invalid value'
+# 	
+# 	return value * ratio
+# 	# return ((value/deviceHeight)*100)+'%'
+
 
 
 exports.util = 

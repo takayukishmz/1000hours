@@ -14,8 +14,8 @@ CircleGraph = (function() {
   __extends(CircleGraph, BaseComponent);
   CircleGraph.prototype._ICON_SIZE = [35, 29];
   CircleGraph.prototype._ICON_MARGIN = 10;
-  CircleGraph.prototype._ICON_POS = [185, 180];
-  CircleGraph.prototype._WEBVIEW_URL_CIRCLE = "https://dl.dropbox.com/u/15300991/circle.html?";
+  CircleGraph.prototype._ICON_POS = [180, 180];
+  CircleGraph.prototype._WEBVIEW_URL_CIRCLE = "https://1000hours.site44.com?";
   function CircleGraph() {
     this._setTime = __bind(this._setTime, this);
     this.setView = __bind(this.setView, this);    this._hours = [];
@@ -44,7 +44,7 @@ CircleGraph = (function() {
       this.add(icon);
       hour = Ti.UI.createLabel({
         top: top,
-        right: 68,
+        left: 217,
         width: 30,
         height: 25,
         text: '',
@@ -60,7 +60,7 @@ CircleGraph = (function() {
       this._hours.push(hour);
       h = Ti.UI.createLabel({
         top: top,
-        left: 255,
+        left: 250,
         width: 30,
         height: 25,
         text: 'h.',
@@ -79,7 +79,7 @@ CircleGraph = (function() {
       this.add(h);
       min = Ti.UI.createLabel({
         top: top,
-        right: 29,
+        left: 256,
         width: 30,
         height: 25,
         text: '',
@@ -95,7 +95,7 @@ CircleGraph = (function() {
       this._mins.push(min);
       m = Ti.UI.createLabel({
         top: top,
-        left: 293,
+        left: 288,
         width: 100,
         height: 25,
         text: 'm',
@@ -128,7 +128,6 @@ CircleGraph = (function() {
     });
     this.webview = Ti.UI.createWebView({
       backgroundColor: 0,
-      loading: true,
       top: 175,
       left: 10,
       width: 140,
@@ -158,6 +157,7 @@ CircleGraph = (function() {
       this.circleCover.setVisible(true);
     }, this));
     this.webview.addEventListener('touchmove', function() {});
+    this.webview.url = this._WEBVIEW_URL_CIRCLE;
     this.add(this.webview);
     this.add(this.webviewMsg);
     this.add(this.circleCover);
@@ -179,9 +179,6 @@ CircleGraph = (function() {
       value = timeTypes[i];
       param += value + '=' + times[value] + '&';
     }
-    info(this.paramCache);
-    info(param);
-    info(this.paramCache === param);
     if (this.paramCache && this.paramCache === param) {
       info('use cache');
     } else {

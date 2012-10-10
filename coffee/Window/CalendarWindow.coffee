@@ -3,11 +3,10 @@ TitlePanel    = require('Component/Calendar/TitlePanel').TitlePanel
 CalendarView  = require('Component/Calendar/CalendarView').CalendarView
 Calendar  	  = require('Model/Calendar').Calendar
 ChartWindow   = require('Window/ChartWindow').ChartWindow
-InputTimeWindow   = require('Window/InputTimeWindow').InputTimeWindow
-SettingNavWindow   = require('Window/SettingNavWindow').SettingNavWindow
+SettingNavWindow = require('Window/SettingNavWindow').SettingNavWindow
 Input   = require('Component/Calendar/Input').Input
 EventType = require('Event/EventType').EventType
-
+TutorialWindow 	= require('Window/TutorialWindow').TutorialWindow
 class CalendarWindow extends BaseWindow
 	WEEK_COLOR : ["reds","#fff","#fff","#fff","#fff","#fff","#fff"]
 	constructor : () ->
@@ -21,14 +20,16 @@ class CalendarWindow extends BaseWindow
 		@_calendar = new CalendarView(@_model)
 		@_settingNavWindow = new SettingNavWindow()
 		@_chartWindow = new ChartWindow()
+		
 		@_model.setMonthlyData()
 		
 		@win.add @_calendar.getNodeView()		
 		@win.add @_inputDialog.getNodeView()
 		
 		@win.hideTabBar()
-		return @win
 		
+		return @win
+	
 	setView: () =>
 		@setHeaderTitleImage
 			backgroundImage : global.getImagePath 'Calendar/title_calendar'
@@ -42,7 +43,7 @@ class CalendarWindow extends BaseWindow
 	setButton: () =>
 		rightBtn = Ti.UI.createButton
 			top:0
-			right:0
+			left:263
 			width:57
 			height:45
 			backgroundImage : global.getImagePath 'Calendar/btn_chart'
@@ -75,12 +76,10 @@ class CalendarWindow extends BaseWindow
 	setEvent: () =>
 		Ti.App.addEventListener EventType.update_target_time, (data) =>
 			
-			info 'update_target_time', data.day
 			@_model.updateTimeData(data.key, data.hour, data.minute, data.day)
 			return
 
 		Ti.App.addEventListener EventType.open_input, (data) =>
-			info 'handle:open_input',JSON.stringify data
 			hhmm = @_model.convertToHHMM data.time
 			hour = hhmm[0]
 			minute = hhmm[1]
@@ -90,7 +89,7 @@ class CalendarWindow extends BaseWindow
 			return		
 			
 		Ti.App.addEventListener EventType.click_box, (e) =>
-			info 'click_box'
+			# info 'click_box'
 			day = 0
 			
 			#toggle new selected day
@@ -106,9 +105,14 @@ class CalendarWindow extends BaseWindow
 			
 			Ti.App.fireEvent EventType.set_unselect, {day:day}	
 			return
-
-			
-			
 		
-		
+		@win.addEventListener 'focus', (e) =>
+			# info '1'
+			# if !global.tutorialManager.isDone global.tutorialManager.LIST.START
+			# 	info '2'
+			# 	@_tutorialWindow = new TutorialWindow {standAlone:true}
+			# 	@_tutorialWindow.open modal:true
+			# 		
+		return
+	
 exports.CalendarWindow = CalendarWindow

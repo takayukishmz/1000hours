@@ -5,9 +5,10 @@ util = require('Lib/Util').util;
 getText = require('Lib/Util').getText;
 global.getImagePath = require('Lib/Util').getImagePath;
 (function() {
-  var Calendar, TabGroup, db;
+  var Calendar, TabGroup, TutorialManager, db;
   TabGroup = require('Component/Common/TabGroup').TabGroup;
   Calendar = require('Window/CalendarWindow').CalendarWindow;
+  TutorialManager = require('Lib/TutorialManager').TutorialManager;
   db = require('DB/Record').Record;
   db.createTable("RECORD");
   global.tabs = new TabGroup({
@@ -15,5 +16,6 @@ global.getImagePath = require('Lib/Util').getImagePath;
     title: 'Tab 1',
     window: new Calendar
   });
+  global.tutorialManager = new TutorialManager();
   global.tabs.open();
 })();

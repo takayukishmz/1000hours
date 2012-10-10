@@ -18,13 +18,18 @@ class CalendarView extends BaseComponent
 			contentWidth:'auto'
 			contentHeight:'auto'
 			top:45
+			left:0
 			height:430
 			width:320
 		
 		@switchCal()
+		@setDetailPanel @_model.getTodayRecord()
 		@_model.setCalendarData()
 		@_title.text = @_model.getMonthName()
 		@_year.text = @_model.getYear()
+		
+
+		return
 		
 	setView : ()->
 		@_buildTitlePanel()
@@ -39,7 +44,7 @@ class CalendarView extends BaseComponent
 			return
 		
 		Ti.App.addEventListener EventType.update_cal, (e) =>
-			info 'update_cal', JSON.stringify e.data
+			# info 'update_cal', JSON.stringify e.data
 			@_data = e.data
 			@updateCal()
 			return
@@ -70,8 +75,31 @@ class CalendarView extends BaseComponent
 			@updateDetail(e)
 			return
 		
-		return
+		Ti.App.addEventListener EventType.set_unselect, (e) =>
+			if @isNormalBg
+				@toggleBoxes @boxes, e.day
+			else if @isScrollBg
+				@toggleBoxes @boxesScroll, e.day
 		
+		return
+	
+	toggleBoxes : (boxes, day) ->
+		for	box in boxes
+			# if box.day.text != day or !box._data.show
+			if box.day.text == day and box._data.show
+				box.toggle true
+			else if box.getState()
+				box.toggle false
+			
+		return
+	
+	unSelectAll : (boxes) ->
+		for box in boxes
+			box.toggle false
+		
+		return
+	
+	
 	updateDetail : (data) =>
 		if @dayNum.value != data.day
 			return
@@ -87,7 +115,7 @@ class CalendarView extends BaseComponent
 		if !@_model.isPastDay data.day
 			@alert.show()
 			return
-				
+		
 		@dayNum.backgroundImage = global.getImagePath 'Calendar/Date/date_'+data.day
 		@dayNum.value = data.day
 
@@ -102,7 +130,7 @@ class CalendarView extends BaseComponent
 				
 		for value, i in @time_types
 			if !data.record or !data.record[@time_types[i]]
-				info i, value
+				# info i, value
 				@times[i].text = 0	
 				continue
 				
@@ -123,7 +151,7 @@ class CalendarView extends BaseComponent
 				
 		else 
 			for	box, i in @boxesScroll
-				info 'scroll setData', i
+				# info 'scroll setData', i
 				box.setData @_data[i]
 		
 		return
@@ -191,6 +219,7 @@ class CalendarView extends BaseComponent
 			@isNormalBg = true
 			
 			if @isScrollBg
+				@unSelectAll @boxesScroll
 				@remove @calScrollBg
 				@isScrollBg = false
 			
@@ -200,6 +229,7 @@ class CalendarView extends BaseComponent
 			@isScrollBg = true
 			
 			if @isNormalBg
+				@unSelectAll @boxes
 				@remove @calBg
 				@isNormalBg = false
 							
@@ -213,7 +243,7 @@ class CalendarView extends BaseComponent
 			left:30
 			width: 150,
 			height: 24,
-			text: 'June'
+			text: ''
 			color: '#383838'
 			textAlign:'right'
 			font: {fontFamily: 'Helvetica Neue', fontSize: 22,fontWeight:"bold"}
@@ -222,7 +252,7 @@ class CalendarView extends BaseComponent
 		
 		
 		@_year = Ti.UI.createLabel
-			top : 6
+			top : 10
 			left:185
 			width: 40
 			height: 16
@@ -270,7 +300,7 @@ class CalendarView extends BaseComponent
 				color: '#333333'
 				shadowColor:'#FFFFFF'
 				textAlign:'center'
-				font: {fontFamily: 'Helvetica Neue', fontSize: 12}
+				font: {fontFamily: 'American Typewriter', fontSize: 12}
 			@add title
 		return
 	
@@ -288,12 +318,6 @@ class CalendarView extends BaseComponent
 			top: 12.5,
 			width: 47,
 			height: 32,
-			# text: '0',
-			# color: '#ffffff',
-			# textAlign : 'center'
-			# font: {fontFamily: 'American Typewriter', fontSize: 27}
-			# shadowColor:'#7a4822'
-			# shadowOffset:{x:0,y:-1}
 		
 		@dayNoNum = Titanium.UI.createLabel
 			left: 0,
@@ -390,8 +414,10 @@ class CalendarView extends BaseComponent
 			categoryBox.add @categoryLebel
 			# categoryBox.add icon
 			
-			categoryBox.addEventListener 'click', (e) =>			
+			categoryBox.addEventListener 'click', (e) =>
 				# info 'categoryBox click',JSON.stringify e
+				if @times[e.source.index].text == '-'
+					return
 				
 				data = 
 					timeType : e.source.timeType.toLowerCase()
@@ -415,16 +441,16 @@ class CalendarView extends BaseComponent
 		return
 		
 	_updateTime : (time, index) =>
-		if !time
+		if time < 0 or time == undefined
 			return
-		
+					
 		@times[index].text = time
-		if time.toString().length > 3
-			info JSON.stringify @times[index].font.fontSize
-			@times[index].font = {fontFamily: 'Helvetica Neue', fontSize:18,fontWeight:"bold"}
-		else 
-			info JSON.stringify @times[index].font.fontSize, 'short'
-			@times[index].font = {fontFamily: 'Helvetica Neue', fontSize:22,fontWeight:"bold"}
+		# if time.toString().length > 3
+		# 	# info JSON.stringify @times[index].font.fontSize
+		# 	@times[index].font = {fontFamily: 'Helvetica Neue', fontSize:18,fontWeight:"bold"}
+		# else 
+		# 	# info JSON.stringify @times[index].font.fontSize, 'short'
+		# 	@times[index].font = {fontFamily: 'Helvetica Neue', fontSize:22,fontWeight:"bold"}
 		
 		return
 	

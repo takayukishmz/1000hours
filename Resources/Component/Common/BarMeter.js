@@ -15,6 +15,7 @@ BarMeter = (function() {
   function BarMeter(param) {
     this.param = param;
     this.getCoverWitdh = __bind(this.getCoverWitdh, this);
+    this.getRatio = __bind(this.getRatio, this);
     this.setMaxValue = __bind(this.setMaxValue, this);
     this.setValue = __bind(this.setValue, this);
     this.buildBar = __bind(this.buildBar, this);
@@ -58,6 +59,9 @@ BarMeter = (function() {
   };
   BarMeter.prototype.setMaxValue = function(max) {
     this.maxValue = max;
+  };
+  BarMeter.prototype.getRatio = function() {
+    return this.currentValue / this.maxValue;
   };
   BarMeter.prototype._ajustValue = function(ratio) {
     if (ratio > 1) {

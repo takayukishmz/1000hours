@@ -13,6 +13,7 @@ CircleGraph = require('/Component/Chart/CircleGraph').CircleGraph;
 Chart = require('Model/Chart').Chart;
 ShareInputWindow = require('Window/ShareInputWindow').ShareInputWindow;
 Ti.Facebook.appid = '347563875338453';
+Ti.Facebook.permissions = ['publish_stream'];
 Ti.include("Lib/Twitter/twitter_api.js");
 ChartWindow = (function() {
   __extends(ChartWindow, BaseWindow);
@@ -23,7 +24,7 @@ ChartWindow = (function() {
     this._model = new Chart();
     this._total = new TotalTimeBarGraph();
     this._circle = new CircleGraph();
-    this._shareInputWindow = new ShareInputWindow();
+    this._shareInputWindow = new ShareInputWindow(this._model);
     this.win.add(this._total.getNodeView());
     this.win.add(this._circle.getNodeView());
     return this.win;
@@ -39,9 +40,9 @@ ChartWindow = (function() {
     });
     bottombar = Titanium.UI.createView({
       left: 0,
-      bottom: 0,
+      top: 388,
       width: 320,
-      height: 75,
+      height: 72,
       backgroundImage: global.getImagePath('Common/bottombar')
     });
     this.win.add(bottombar);
@@ -52,7 +53,7 @@ ChartWindow = (function() {
       top: 0,
       left: 0,
       width: 62,
-      height: 45,
+      height: 44,
       backgroundImage: global.getImagePath('Chart/btn_back'),
       backgroundSelectedImage: global.getImagePath('Chart/btn_back_dw')
     });
@@ -63,7 +64,7 @@ ChartWindow = (function() {
     }, this));
     this.win.add(leftBtn);
     fbBtn = Ti.UI.createButton({
-      bottom: 9,
+      top: 396,
       left: 12,
       width: 145,
       height: 56,
@@ -73,8 +74,8 @@ ChartWindow = (function() {
     this.win.add(fbBtn);
     this.setupSNS();
     twBtn = Ti.UI.createButton({
-      bottom: 9,
-      right: 12,
+      top: 396,
+      left: 163,
       width: 145,
       height: 56,
       backgroundImage: global.getImagePath('Chart/btn_tweet'),
@@ -105,9 +106,6 @@ ChartWindow = (function() {
     }, this));
   };
   ChartWindow.prototype.setEvent = function() {
-    Ti.App.addEventListener('hoge', function() {
-      info(Ti.Platform.availableMemory);
-    });
     return this.win.addEventListener('focus', __bind(function(e) {
       this._model.setGraphData();
     }, this));

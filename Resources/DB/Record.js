@@ -1,4 +1,5 @@
-var DATABASE_NAME, TABLE;
+var Const, DATABASE_NAME, TABLE;
+Const = require('Lib/Const').Const;
 DATABASE_NAME = "1000";
 TABLE = {
   RECORD: 'record'
@@ -31,6 +32,17 @@ exports.Record = {
     db = Ti.Database.open(DATABASE_NAME);
     rows = db.execute("select * from " + this.tableName);
     retData = this._convertToObj(rows);
+    retData.sort(function(a, b) {
+      var diff;
+      diff = a.year - b.year;
+      if (diff === 0) {
+        diff = a.month - b.month;
+        if (diff === 0) {
+          diff = a.day - b.day;
+        }
+      }
+      return diff;
+    });
     db.close();
     return retData;
   },
@@ -39,6 +51,14 @@ exports.Record = {
     retData = [];
     db = Ti.Database.open(DATABASE_NAME);
     rows = db.execute("select * from " + this.tableName + " where year=? and month=?", _year, _month);
+    retData = this._convertToObj(rows);
+    db.close();
+    return retData;
+  },
+  getSelectOne: function(_year, _month, _day) {
+    var db, retData, rows;
+    db = Ti.Database.open(DATABASE_NAME);
+    rows = db.execute("select * from " + this.tableName + " where year=? and month=? and day=?", _year, _month, _day);
     retData = this._convertToObj(rows);
     db.close();
     return retData;
@@ -54,6 +74,12 @@ exports.Record = {
     y = ymd[0];
     m = ymd[1];
     d = ymd[2];
+    if (!this._validateDate(ymd[0], ymd[1], ymd[2])) {
+      return;
+    }
+    if (!this._validateRecord(value)) {
+      return;
+    }
     db = Ti.Database.open(DATABASE_NAME);
     info(sql, value + ":" + y + ":" + m + ":" + d);
     db.execute(sql, value, y, m, d);
@@ -62,8 +88,41 @@ exports.Record = {
     db.close();
     return rows;
   },
+  _validateDate: function(y, m, d) {
+    if (typeof y !== 'number' || typeof m !== 'number' || typeof d !== 'number') {
+      info('Invalid data. not number. y:' + y + ' m:' + m + ' d:' + d);
+      return;
+    }
+    if (y <= 0) {
+      info('Invalid year. y:' + y + ' m:' + m + ' d:' + d);
+      return false;
+    }
+    if (m <= 0 || m > 12) {
+      info('Invalid month. y:' + y + ' m:' + m + ' d:' + d);
+      return false;
+    }
+    if (d <= 0 || d > Const.MONTH_LENGTH[m - 1]) {
+      info('Invalid day. y:' + y + ' m:' + m + ' d:' + d);
+      return false;
+    }
+    return true;
+  },
+  _validateRecord: function(value) {
+    if (value !== '' && value !== void 0 && value >= 0) {
+      return true;
+    } else {
+      info('Invalid data. not number. ' + value);
+      return false;
+    }
+  },
   addRecord: function(w, r, l, s, ymd) {
     var db;
+    if (!this._validateDate(ymd[0], ymd[1], ymd[2])) {
+      return;
+    }
+    if (!this._validateRecord(w) || !this._validateRecord(r) || !this._validateRecord(l) || !this._validateRecord(s)) {
+      return;
+    }
     db = Ti.Database.open(DATABASE_NAME);
     info("insert into record values (?,?,?,?,?,?,?)", ymd[0] + ":" + ymd[1] + ":" + ymd[2] + ":" + w + ":" + r + ":" + l + ":" + s);
     db.execute("insert into record values (?,?,?,?,?,?,?)", ymd[0], ymd[1], ymd[2], w, r, l, s);

@@ -1,4 +1,4 @@
-var BaseWindow, Calendar, CalendarView, CalendarWindow, ChartWindow, EventType, Input, InputTimeWindow, SettingNavWindow, TitlePanel;
+var BaseWindow, Calendar, CalendarView, CalendarWindow, ChartWindow, EventType, Input, SettingNavWindow, TitlePanel, TutorialWindow;
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
   for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
   function ctor() { this.constructor = child; }
@@ -12,10 +12,10 @@ TitlePanel = require('Component/Calendar/TitlePanel').TitlePanel;
 CalendarView = require('Component/Calendar/CalendarView').CalendarView;
 Calendar = require('Model/Calendar').Calendar;
 ChartWindow = require('Window/ChartWindow').ChartWindow;
-InputTimeWindow = require('Window/InputTimeWindow').InputTimeWindow;
 SettingNavWindow = require('Window/SettingNavWindow').SettingNavWindow;
 Input = require('Component/Calendar/Input').Input;
 EventType = require('Event/EventType').EventType;
+TutorialWindow = require('Window/TutorialWindow').TutorialWindow;
 CalendarWindow = (function() {
   __extends(CalendarWindow, BaseWindow);
   CalendarWindow.prototype.WEEK_COLOR = ["reds", "#fff", "#fff", "#fff", "#fff", "#fff", "#fff"];
@@ -50,7 +50,7 @@ CalendarWindow = (function() {
     var leftBtn, rightBtn;
     rightBtn = Ti.UI.createButton({
       top: 0,
-      right: 0,
+      left: 263,
       width: 57,
       height: 45,
       backgroundImage: global.getImagePath('Calendar/btn_chart'),
@@ -79,21 +79,18 @@ CalendarWindow = (function() {
   };
   CalendarWindow.prototype.setEvent = function() {
     Ti.App.addEventListener(EventType.update_target_time, __bind(function(data) {
-      info('update_target_time', data.day);
       this._model.updateTimeData(data.key, data.hour, data.minute, data.day);
     }, this));
     Ti.App.addEventListener(EventType.open_input, __bind(function(data) {
       var hhmm, hour, minute;
-      info('handle:open_input', JSON.stringify(data));
       hhmm = this._model.convertToHHMM(data.time);
       hour = hhmm[0];
       minute = hhmm[1];
       this._inputDialog.setData(data.timeType, hour, minute, data.day);
       this._inputDialog.open();
     }, this));
-    return Ti.App.addEventListener(EventType.click_box, __bind(function(e) {
+    Ti.App.addEventListener(EventType.click_box, __bind(function(e) {
       var day;
-      info('click_box');
       day = 0;
       if (this._model.isPastDay(e.day)) {
         this._model.setSelectedDay(e.day);
@@ -107,6 +104,7 @@ CalendarWindow = (function() {
         day: day
       });
     }, this));
+    this.win.addEventListener('focus', __bind(function(e) {}, this));
   };
   return CalendarWindow;
 })();

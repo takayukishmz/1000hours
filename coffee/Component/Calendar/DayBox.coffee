@@ -11,12 +11,13 @@ class DayBox extends BaseComponent
 		@icons = []
 		@time_types = Const.TIME_TYPE
 		@_record = {}
+		@_isSelected = false
 		super
 			left:@frame[0]
 			top:@frame[1]
 			width:@frame[2]
 			height:@frame[3]
-		
+	
 	setView: () =>
 		@_button = Titanium.UI.createButton
 			top:0
@@ -48,12 +49,29 @@ class DayBox extends BaseComponent
 		@_buildIcons()
 		return
 	
-	toggle : (flg) =>
-		if flg
-			@_button.backgroundImage = global.getImagePath 'Calendar/bg_calender_dw'
-		else 
-			@_button.backgroundImage = global.getImagePath 'Calendar/bg_calender'
+	getState : () ->
+		return @_isSelected
+	
+	toggle : (@_isSelected) =>	
 		
+		if @_isSelected
+			@_button.backgroundImage = global.getImagePath 'Calendar/bg_calender_dw'
+			
+			if @_data.show
+				@day.color = '#ffffff'
+				@day.shadowColor = '#7a4822'
+				@day.shadowOffset = {x:0,y:-1}
+			
+		else
+			if @_data.isToday
+				@_button.backgroundImage = global.getImagePath 'Calendar/bg_calender_today'
+			else 
+				@_button.backgroundImage = global.getImagePath 'Calendar/bg_calender'
+			
+			if @_data.show
+				@day.color = '#333333'
+				@day.shadowColor = '#ffffff'
+				@day.shadowOffset = {x:0,y:1}
 	
 	setDay : (num) ->
 		@day.text = num
@@ -65,14 +83,28 @@ class DayBox extends BaseComponent
 		return
 		
 	show : () ->
-		@day.color = '#333333'
+		if @_isSelected
+			@day.color = '#ffffff'
+		else
+			@day.color = '#333333'
+		
 		@_button.setTouchEnabled true
 		return
-		
+	
+	###
+	data format is this:
+	 {
+		day: 1
+		show:true
+		record:record obj
+		isToday : true
+	}
+	###
 	setData : (data) ->
 		@_data = data
 		@setDay data.day
 		@_record = data.record
+		@
 				
 		if data.show
 			@show()
@@ -85,20 +117,22 @@ class DayBox extends BaseComponent
 			else
 				@icons[i].setVisible true
 		
+		
+		@toggle @_data.isSelected
+		
 		return
 		
 	setEvent:() ->
-		Ti.App.addEventListener EventType.set_unselect, (e) =>
-			if @day.text != e.day || !@_data.show
-				@toggle false
-			else 
-				@toggle true
-			return
-		
-		
-		@_button.addEventListener 'click', () =>
-			Ti.App.fireEvent EventType.click_box, @_data
+		# Ti.App.addEventListener EventType.set_unselect, (e) =>
+		# 	if @day.text != e.day || !@_data.show
+		# 		@toggle false
+		# 	else 
+		# 		@toggle true
+		# 	return
+		@_button.addEventListener 'touchstart', () =>
 			@toggle true
+			Ti.App.fireEvent EventType.click_box, @_data
+			# @toggle true
 			return
 		
 	_buildIcons : () ->

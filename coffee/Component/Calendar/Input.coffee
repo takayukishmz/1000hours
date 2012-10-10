@@ -5,6 +5,10 @@ class Input extends BaseComponent
 	HOUR : [0..23]
 	MINUTE : [0..59]
 	
+	ROW_NO :
+		HOUR:1
+		MINUTE:2
+	
 	constructor : () ->
 		super 
 			top:-480
@@ -27,7 +31,7 @@ class Input extends BaseComponent
 			top:0
 			left:0
 			height:480
-			width:'auto'
+			width:320
 			backgroundColor:'black'
 			opacity:0.5
 		
@@ -35,7 +39,7 @@ class Input extends BaseComponent
 			top:-480
 			left:0
 			height:385
-			width:'auto'
+			width:320
 			backgroundImage : global.getImagePath 'Calendar/Input/bg_modal'
 		
 		@_title = Ti.UI.createView
@@ -59,24 +63,19 @@ class Input extends BaseComponent
 			backgroundSelectedImage : global.getImagePath 'Calendar/Input/btn_save_modal_dw'
 			width:320
 			height:50
-			top:267
+			top:272
 			left:0
 		
 		saveBtn.addEventListener 'click', (e) =>
-			hoge = @picker.getCountDownDuration()
-			info JSON.stringify @picker
 			hourIndex = @picker.getSelectedRow(0).index
 			minIndex = @picker.getSelectedRow(1).index
 			
-			info hourIndex
-			info minIndex
 			data = 
 				day:@day
 				key : @timeType
 				hour:@HOUR[hourIndex]
 				minute:@MINUTE[minIndex]
 			
-			info data
 			Ti.App.fireEvent EventType.update_target_time, data
 			@close()
 			return
@@ -88,7 +87,7 @@ class Input extends BaseComponent
 			backgroundSelectedImage : global.getImagePath 'Calendar/Input/btn_cancel_modal_dw'
 			width:320
 			height:50
-			top:320
+			top:327
 			left:0
 	
 		cancelBtn.addEventListener 'click', () =>
@@ -101,7 +100,7 @@ class Input extends BaseComponent
 	_buildPicker : () =>
 		@picker = Ti.UI.createPicker
 			left:15
-			top:48
+			top:46
 			width:290
 			height:188
 			selectionIndicator:true
@@ -120,6 +119,7 @@ class Input extends BaseComponent
 				title:"    "+value.toString()
 				index:i
 				fontSize:22
+				rowNo:@ROW_NO.HOUR
 						
 			hourColumn.addRow row
 			
@@ -128,6 +128,7 @@ class Input extends BaseComponent
 				fontSize:22
 				index:j
 				title: "    "+value.toString()
+				rowNo:@ROW_NO.MINUTE
 				
 			minuteColumn.addRow row
 		
@@ -161,6 +162,19 @@ class Input extends BaseComponent
 		@_panel.add min
 		
 		@picker.addEventListener 'change',(e) =>
+			row = e.row
+			
+			if row.rowNo == @ROW_NO.HOUR 
+				if row.index == 1
+					hour.text = 'hour'
+				else 
+					hour.text = 'hours'
+			else if row.rowNo == @ROW_NO.MINUTE
+				if row.index == 1
+					min.text = 'min'
+				else 
+					min.text = 'mins'
+			  # body...
 			return
 		
 		return

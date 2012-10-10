@@ -22,6 +22,10 @@ Input = (function() {
     for (_j = 0; _j <= 59; _j++){ _results2.push(_j); }
     return _results2;
   }).apply(this);
+  Input.prototype.ROW_NO = {
+    HOUR: 1,
+    MINUTE: 2
+  };
   function Input() {
     this.close = __bind(this.close, this);
     this._setup = __bind(this._setup, this);
@@ -46,7 +50,7 @@ Input = (function() {
       top: 0,
       left: 0,
       height: 480,
-      width: 'auto',
+      width: 320,
       backgroundColor: 'black',
       opacity: 0.5
     });
@@ -54,7 +58,7 @@ Input = (function() {
       top: -480,
       left: 0,
       height: 385,
-      width: 'auto',
+      width: 320,
       backgroundImage: global.getImagePath('Calendar/Input/bg_modal')
     });
     this._title = Ti.UI.createView({
@@ -76,24 +80,19 @@ Input = (function() {
       backgroundSelectedImage: global.getImagePath('Calendar/Input/btn_save_modal_dw'),
       width: 320,
       height: 50,
-      top: 267,
+      top: 272,
       left: 0
     });
     saveBtn.addEventListener('click', __bind(function(e) {
-      var data, hoge, hourIndex, minIndex;
-      hoge = this.picker.getCountDownDuration();
-      info(JSON.stringify(this.picker));
+      var data, hourIndex, minIndex;
       hourIndex = this.picker.getSelectedRow(0).index;
       minIndex = this.picker.getSelectedRow(1).index;
-      info(hourIndex);
-      info(minIndex);
       data = {
         day: this.day,
         key: this.timeType,
         hour: this.HOUR[hourIndex],
         minute: this.MINUTE[minIndex]
       };
-      info(data);
       Ti.App.fireEvent(EventType.update_target_time, data);
       this.close();
     }, this));
@@ -103,7 +102,7 @@ Input = (function() {
       backgroundSelectedImage: global.getImagePath('Calendar/Input/btn_cancel_modal_dw'),
       width: 320,
       height: 50,
-      top: 320,
+      top: 327,
       left: 0
     });
     cancelBtn.addEventListener('click', __bind(function() {
@@ -115,7 +114,7 @@ Input = (function() {
     var hour, hourColumn, i, j, min, minuteColumn, row, value, _len, _len2, _ref, _ref2;
     this.picker = Ti.UI.createPicker({
       left: 15,
-      top: 48,
+      top: 46,
       width: 290,
       height: 188,
       selectionIndicator: true
@@ -128,7 +127,8 @@ Input = (function() {
       row = Ti.UI.createPickerRow({
         title: "    " + value.toString(),
         index: i,
-        fontSize: 22
+        fontSize: 22,
+        rowNo: this.ROW_NO.HOUR
       });
       hourColumn.addRow(row);
     }
@@ -138,7 +138,8 @@ Input = (function() {
       row = Ti.UI.createPickerRow({
         fontSize: 22,
         index: j,
-        title: "    " + value.toString()
+        title: "    " + value.toString(),
+        rowNo: this.ROW_NO.MINUTE
       });
       minuteColumn.addRow(row);
     }
@@ -172,7 +173,22 @@ Input = (function() {
       }
     });
     this._panel.add(min);
-    this.picker.addEventListener('change', __bind(function(e) {}, this));
+    this.picker.addEventListener('change', __bind(function(e) {
+      row = e.row;
+      if (row.rowNo === this.ROW_NO.HOUR) {
+        if (row.index === 1) {
+          hour.text = 'hour';
+        } else {
+          hour.text = 'hours';
+        }
+      } else if (row.rowNo === this.ROW_NO.MINUTE) {
+        if (row.index === 1) {
+          min.text = 'min';
+        } else {
+          min.text = 'mins';
+        }
+      }
+    }, this));
   };
   Input.prototype.open = function() {
     var action;

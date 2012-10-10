@@ -6,6 +6,8 @@ Chart 			= require('Model/Chart').Chart
 ShareInputWindow 		= require('Window/ShareInputWindow').ShareInputWindow
 
 Ti.Facebook.appid = '347563875338453'
+Ti.Facebook.permissions = ['publish_stream']
+
 Ti.include("Lib/Twitter/twitter_api.js");
 		
 class ChartWindow extends BaseWindow
@@ -15,7 +17,7 @@ class ChartWindow extends BaseWindow
 		@_model = new Chart()
 		@_total = new TotalTimeBarGraph()
 		@_circle = new CircleGraph()
-		@_shareInputWindow = new ShareInputWindow()
+		@_shareInputWindow = new ShareInputWindow(@_model)
 		@win.add @_total.getNodeView()
 		@win.add @_circle.getNodeView()
 		
@@ -30,22 +32,23 @@ class ChartWindow extends BaseWindow
 			top:12		
 		
 		bottombar = Titanium.UI.createView
-			left: 0,
-			bottom: 0,
-			width: 320,
-			height: 75,
+			left:0,
+			top:388,
+			width:320,
+			height:72,
 			backgroundImage:global.getImagePath 'Common/bottombar'
 		
 		@win.add bottombar
 		
 		return
 	
+	
 	setButton: () ->
 		leftBtn = Ti.UI.createButton
 			top:0
 			left:0
 			width:62 
-			height:45
+			height:44
 			backgroundImage : global.getImagePath 'Chart/btn_back'
 			backgroundSelectedImage : global.getImagePath 'Chart/btn_back_dw'
 		
@@ -56,7 +59,7 @@ class ChartWindow extends BaseWindow
 		@win.add leftBtn
 		
 		fbBtn = Ti.UI.createButton
-			bottom:9
+			top:396
 			left:12
 			width:145
 			height:56
@@ -69,8 +72,8 @@ class ChartWindow extends BaseWindow
 		@setupSNS()
 		
 		twBtn = Ti.UI.createButton
-			bottom:9
-			right:12
+			top:396
+			left:163
 			width:145
 			height:56
 			backgroundImage : global.getImagePath 'Chart/btn_tweet'
@@ -93,10 +96,13 @@ class ChartWindow extends BaseWindow
 			return
 			
 		
+		# Ti.Facebook.logout()
 		fbBtn.addEventListener 'click', () =>
 			if Ti.Facebook.loggedIn
 				info 'fb already login'
 				@_shareInputWindow.open({modal:true}, @_shareInputWindow.TYPE.FACEBOOK)
+				# @_showFbDialog()
+				
 			else
 				info 'fb login'
 				Ti.Facebook.authorize()
@@ -106,13 +112,34 @@ class ChartWindow extends BaseWindow
 		
 		
 		return
-			
+	
+	# _showFbDialog : () ->
+	# 	data = 
+	# 		link : "http://www.appcelerator.com"
+	# 		name : @_model.getSnsShareText L 'tw_default_message_fb'#{}"Appcelerator Titanium Mobile"
+	# 		message : "Checkout this cool open source project for creating mobile apps"
+	# 		caption : "Appcelerator Titanium Mobile"
+	# 		picture : "https://dl.dropbox.com/u/15300991/icon_114.png"
+	# 		description : @_model.getSnsShareText L 'tw_default_message'
+	# 	    # description : "You've got the ideas, now you've got the power. Titanium translates " +
+	# 	    #               "your hard won web skills into native applications..."
+	# 
+	# 	
+	# 	Titanium.Facebook.dialog "feed", data, (e) ->
+	# 	    if e.success && e.result
+	# 	        alert("Success! New Post ID: " + e.result)
+	# 	    else 
+	# 	        if e.error
+	# 	            alert(e.error)
+	# 	        else 
+	# 	            alert("User canceled dialog.")
+	# 	        
+	# 		
+	# 	
+	# 
+	# 
+	
 	setEvent: () ->	
-		
-		Ti.App.addEventListener 'hoge', () ->
-			info Ti.Platform.availableMemory
-			return
-			
 		@win.addEventListener 'focus', (e) =>
 			@_model.setGraphData()
 			return

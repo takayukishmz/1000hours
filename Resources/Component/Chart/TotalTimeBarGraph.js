@@ -15,7 +15,7 @@ TotalTimeBarGraph = (function() {
   __extends(TotalTimeBarGraph, BaseComponent);
   TotalTimeBarGraph.prototype._BAR_RECT = {
     left: 15,
-    top: 100,
+    top: 103,
     width: 290,
     height: 45
   };
@@ -177,17 +177,32 @@ TotalTimeBarGraph = (function() {
       }
     });
     this.add(hourUnit);
-    this.mark = Ti.UI.createLabel({
+    this.goal = Ti.UI.createView({
+      left: 290,
+      top: 89,
+      width: 17,
+      height: 16,
+      backgroundImage: global.getImagePath('Chart/mark_flag'),
+      SelectedBackgroundImage: global.getImagePath('Chart/mark_flag_dw')
+    });
+    this.add(this.goal);
+    this.goalAchieve = Ti.UI.createView({
+      left: 281,
+      top: 87,
+      width: 26,
+      height: 18,
+      backgroundImage: global.getImagePath('Chart/mark_goal'),
+      SelectedBackgroundImage: global.getImagePath('Chart/mark_goal_dw')
+    });
+    this.add(this.goalAchieve);
+    this.goalAchieve.setVisible(false);
+    this.mark = Ti.UI.createView({
       left: 25,
-      top: 88,
-      width: 15,
+      top: 91,
+      width: 20,
       height: 15,
-      text: '▼',
-      color: '#000',
-      font: {
-        fontFamily: 'Helvetica Neue',
-        fontSize: 10
-      }
+      backgroundImage: global.getImagePath('Chart/mark_turtle'),
+      SelectedBackgroundImage: global.getImagePath('Chart/mark_turtle_dw')
     });
     return this.add(this.mark);
   };
@@ -203,9 +218,19 @@ TotalTimeBarGraph = (function() {
   };
   TotalTimeBarGraph.prototype.setButton = function() {};
   TotalTimeBarGraph.prototype.setMarkPosition = function() {
-    var barPosX;
-    barPosX = this._BAR_RECT.left + 3 + this._bar.getCoverWitdh();
+    var barPosX, ratio;
+    barPosX = this._BAR_RECT.left + this._bar.getCoverWitdh() - 7;
     this.mark.left = barPosX;
+    ratio = this._bar.getRatio();
+    if (ratio >= 1) {
+      this.goalAchieve.setVisible(true);
+      this.goal.setVisible(false);
+      this.mark.setVisible(false);
+    } else {
+      this.goalAchieve.setVisible(false);
+      this.goal.setVisible(true);
+      this.mark.setVisible(true);
+    }
   };
   return TotalTimeBarGraph;
 })();
