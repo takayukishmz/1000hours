@@ -89,8 +89,9 @@ Chart = (function() {
     return hhmm;
   };
   Chart.prototype._calcWillFinishDate = function(hour) {
-    var data, dd, diff, first, goalDay, last, ratio, unixFirst, unixLast;
+    var data, dd, diff, first, goalDay, last, len, ratio, unixFirst, unixLast;
     data = db.getRawData();
+    len = data.length;
     first = data[0];
     last = data[data.length - 1];
     if (!hour || hour <= 0 || !first || !last) {
@@ -98,10 +99,15 @@ Chart = (function() {
       return false;
     }
     unixFirst = new Date(first.year, first.month - 1, first.day).getTime();
-    unixLast = new Date(last.year, last.month - 1, last.day).getTime();
-    diff = unixLast - unixFirst;
+    if (len !== 1) {
+      unixLast = new Date(last.year, last.month - 1, last.day).getTime();
+      diff = unixLast - unixFirst;
+    } else {
+      diff = 24 * 60 * 60 * 1000;
+    }
     ratio = hour ? Math.floor(this.GOAL_HOUR / hour) : 0;
     if (!diff || !ratio) {
+      info('ERROR hour:' + hour + ' first:' + JSON.stringify(first) + ' last:' + JSON.stringify(last));
       info('ERROR diff:' + diff + ' ratio:' + ratio);
       return false;
     }

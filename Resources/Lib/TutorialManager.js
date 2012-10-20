@@ -4,7 +4,7 @@ TutorialManager = (function() {
     START: 1
   };
   function TutorialManager() {
-    this.file = Titanium.Filesystem.getFile(Titanium.Filesystem.resourcesDirectory, 'tutorial.txt');
+    this.file = Titanium.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory + '../Documents/tutorial.txt');
     if (this.file.read()) {
       try {
         info('file content exists');

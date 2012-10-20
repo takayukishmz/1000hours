@@ -28,6 +28,7 @@ TutorialWindow = (function() {
     for (i = 1, _ref = this._TUTORIAL_NUM; 1 <= _ref ? i <= _ref : i >= _ref; 1 <= _ref ? i++ : i--) {
       view = Ti.UI.createView({
         top: 0,
+        left: 0,
         width: 320,
         height: 372,
         backgroundImage: global.getImagePath('Jp/Tutorial/t' + i)

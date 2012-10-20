@@ -61,7 +61,11 @@ exports.Record = {
     rows = db.execute("select * from " + this.tableName + " where year=? and month=? and day=?", _year, _month, _day);
     retData = this._convertToObj(rows);
     db.close();
-    return retData;
+    if (retData.length) {
+      return retData.shift();
+    } else {
+
+    }
   },
   /*
   	 update a Column.

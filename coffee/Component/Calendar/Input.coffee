@@ -3,7 +3,7 @@ EventType = require('Event/EventType').EventType
 
 class Input extends BaseComponent
 	HOUR : [0..23]
-	MINUTE : [0..59]
+	MINUTE : [0..11]
 	
 	ROW_NO :
 		HOUR:1
@@ -74,7 +74,7 @@ class Input extends BaseComponent
 				day:@day
 				key : @timeType
 				hour:@HOUR[hourIndex]
-				minute:@MINUTE[minIndex]
+				minute:@MINUTE[minIndex]*5
 			
 			Ti.App.fireEvent EventType.update_target_time, data
 			@close()
@@ -127,7 +127,7 @@ class Input extends BaseComponent
 			row = Ti.UI.createPickerRow 
 				fontSize:22
 				index:j
-				title: "    "+value.toString()
+				title: "    "+(value.toString()*5)
 				rowNo:@ROW_NO.MINUTE
 				
 			minuteColumn.addRow row
@@ -169,12 +169,13 @@ class Input extends BaseComponent
 					hour.text = 'hour'
 				else 
 					hour.text = 'hours'
-			else if row.rowNo == @ROW_NO.MINUTE
-				if row.index == 1
-					min.text = 'min'
-				else 
-					min.text = 'mins'
-			  # body...
+			# else if row.rowNo == @ROW_NO.MINUTE
+			# 	if row.index == 1
+			# 		min.text = 'min'
+			# 	else 
+			# 		min.text = 'mins'
+			#   # body...
+			
 			return
 		
 		return
@@ -193,7 +194,7 @@ class Input extends BaseComponent
 
 	_setup : () =>
 		@picker.setSelectedRow 0, @hour, true
-		@picker.setSelectedRow 1, @minute, true
+		@picker.setSelectedRow 1, Math.floor(@minute/5), true
 		return
 	
 	close:() =>

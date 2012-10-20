@@ -3,8 +3,7 @@ class TutorialManager
 		START:1
 	
 	constructor : () ->
-		@file = Titanium.Filesystem.getFile(Titanium.Filesystem.resourcesDirectory,'tutorial.txt')
-		
+		@file = Titanium.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory + '../Documents/tutorial.txt')
 		if @file.read()
 			try
 				info 'file content exists'

@@ -79,7 +79,11 @@ exports.Record =
 		rows = db.execute "select * from "+@tableName+" where year=? and month=? and day=?", _year, _month, _day
 		retData = @_convertToObj rows
 		db.close()
-		retData
+		
+		if retData.length
+			return retData.shift()
+		else
+			return
 	###
 	 update a Column.
 	###

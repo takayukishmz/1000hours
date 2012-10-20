@@ -7,20 +7,20 @@
     <property name="acs-oauth-key-development" type="string">4aHaIwpd7RHBz25hMtRpzlKED5zglYoS</property>
     <property name="acs-api-key-development" type="string">kASjA8q17gDnNMlyouU76bg6oTT3fshv</property>
     <deployment-targets>
-        <target device="mobileweb">true</target>
+        <target device="mobileweb">false</target>
         <target device="iphone">true</target>
-        <target device="ipad">true</target>
+        <target device="ipad">false</target>
         <target device="android">false</target>
         <target device="blackberry">false</target>
     </deployment-targets>
     <sdk-version>2.1.3.GA</sdk-version>
     <id>com.1000hours</id>
-    <name>1000hours</name>
-    <version>0.9</version>
-    <publisher>shimizutakayuki</publisher>
-    <url>http://</url>
-    <description>not specified</description>
-    <copyright>2012 by 87 lab</copyright>
+    <name>onethousandhours</name>
+    <version>1.0</version>
+    <publisher>Takayuki Shimizu</publisher>
+    <url>http://dendesign.jp</url>
+    <description>hachinana</description>
+    <copyright>87</copyright>
     <icon>Icon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>true</prerendered-icon>
@@ -43,8 +43,8 @@
         </orientations>
     </iphone>
     <ios>
-     <min-ios-ver>4.3</min-ios-ver>
- 	</ios>
+        <min-ios-ver>4.3</min-ios-ver>
+    </ios>
     <android xmlns:android="http://schemas.android.com/apk/res/android"/>
     <mobileweb>
         <precache/>
@@ -54,5 +54,4 @@
         </splash>
         <theme>default</theme>
     </mobileweb>
-    <property name="ti.facebook.appid">your_facebook_app_id_here</property>
 </ti:app>

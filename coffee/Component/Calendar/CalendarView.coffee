@@ -28,7 +28,6 @@ class CalendarView extends BaseComponent
 		@_title.text = @_model.getMonthName()
 		@_year.text = @_model.getYear()
 		
-
 		return
 		
 	setView : ()->
@@ -36,7 +35,7 @@ class CalendarView extends BaseComponent
 		@_buildScrollCal()
 		@_buildNormalCal()
 		@_buildDetailPanel()
-			
+		
 	setEvent : ()->
 		#update selected day number 
 		Ti.App.addEventListener EventType.click_box, (params) =>
@@ -55,7 +54,7 @@ class CalendarView extends BaseComponent
 			@_model.setCalendarData()
 			@_title.text = @_model.getMonthName()
 			@_year.text = @_model.getYear()
-			return		
+			return
 		
 		@forwardMonthButton.addEventListener 'click', () =>
 			@_model.setNextMonth()
@@ -116,6 +115,7 @@ class CalendarView extends BaseComponent
 			@alert.show()
 			return
 		
+		info data
 		@dayNum.backgroundImage = global.getImagePath 'Calendar/Date/date_'+data.day
 		@dayNum.value = data.day
 
@@ -239,7 +239,7 @@ class CalendarView extends BaseComponent
 
 	_buildTitlePanel : () ->
 		@_title = Ti.UI.createLabel
-			top : 2
+			top : 3.9
 			left:30
 			width: 150,
 			height: 24,
@@ -293,7 +293,7 @@ class CalendarView extends BaseComponent
 
 			title = Ti.UI.createLabel
 				top:33
-				left:45*index
+				left:45.7*index
 				width:45
 				height:12
 				text: value

@@ -15,7 +15,7 @@ CircleGraph = (function() {
   CircleGraph.prototype._ICON_SIZE = [35, 29];
   CircleGraph.prototype._ICON_MARGIN = 10;
   CircleGraph.prototype._ICON_POS = [180, 180];
-  CircleGraph.prototype._WEBVIEW_URL_CIRCLE = "https://1000hours.site44.com?";
+  CircleGraph.prototype._WEBVIEW_URL_CIRCLE = "onethousandhours.site44.com?";
   function CircleGraph() {
     this._setTime = __bind(this._setTime, this);
     this.setView = __bind(this.setView, this);    this._hours = [];
@@ -128,6 +128,7 @@ CircleGraph = (function() {
     });
     this.webview = Ti.UI.createWebView({
       backgroundColor: 0,
+      loading: false,
       top: 175,
       left: 10,
       width: 140,
@@ -135,7 +136,7 @@ CircleGraph = (function() {
     });
     this.circleCover = Ti.UI.createView({
       top: 178,
-      left: 12,
+      left: 13,
       width: 140,
       height: 140,
       backgroundImage: global.getImagePath('Chart/circle')
@@ -157,7 +158,7 @@ CircleGraph = (function() {
       this.circleCover.setVisible(true);
     }, this));
     this.webview.addEventListener('touchmove', function() {});
-    this.webview.url = this._WEBVIEW_URL_CIRCLE;
+    this.webview.url = 'https://' + this._WEBVIEW_URL_CIRCLE;
     this.add(this.webview);
     this.add(this.webviewMsg);
     this.add(this.circleCover);
@@ -183,7 +184,7 @@ CircleGraph = (function() {
       info('use cache');
     } else {
       this.paramCache = param;
-      this.webview.url = this._WEBVIEW_URL_CIRCLE + param;
+      this.webview.url = 'https://' + this._WEBVIEW_URL_CIRCLE + param;
     }
   };
   CircleGraph.prototype.setEvent = function() {

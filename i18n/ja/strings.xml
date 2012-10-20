@@ -9,15 +9,16 @@
         <string name="setting_subtitle_request">ご意見・ご要望を送る</string>
         <string name="title_setting">設定</string>
         <string name="tw_limit">Number of characters is limited to 140 characters.</string>
-        <string name="tw_success">tweetに成功しました</string>
-        <string name="fb_success">Facebookに投稿しました</string>
+        <string name="post_success">投稿成功</string>
+        <string name="tw_success">Twitterへの投稿が完了しました</string>
+        <string name="fb_success">Facebookへの投稿が完了しました</string>
         <string name="fb_failure">Facebookへの投稿に失敗しました</string>
-        <string name="tw_error">tweetに失敗しました</string>
+        <string name="tw_error">Twitterへの投稿に失敗しました</string>
         <string name="tw_default_message">【by 英語1,000時間】英語学習時間が%d時間%d分に達しました。このペースで継続していくと1,000時間達成は%d年%d月%d日ごろです。#1000hours</string>
 		<string name="fb_default_message">英語学習時間が%d時間%d分に達しました。このペースで継続していくと1,000時間達成は%d年%d月%d日ごろです。</string>
 		<string name="message_not_enough_case">英語学習時間が%d時間%d分に達しました。</string>
         <string name="mail_subject">意見・要望　[英語1000時間]</string>
         <string name="mail_body">ご意見・ご要望をおきかせください</string>
         <string name="share_fb_caption">English1000hours</string>
-        <string name="share_fb_description">You've got the ideas, now you've got the power. Titanium translates your hard won web skills into native applications...</string>
+        <string name="share_fb_description">英語学習の記録と継続を目的としたアプリです.\nこのアプリでは「1000時間」という時間目標をたてることで、あなたの英語学習の継続をサポートします。</string>
 </resources>

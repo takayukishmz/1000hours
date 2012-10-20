@@ -10,18 +10,14 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 BaseComponent = require('Component/Common/BaseComponent').BaseComponent;
 EventType = require('Event/EventType').EventType;
 Input = (function() {
-  var _i, _j, _results, _results2;
+  var _i, _results;
   __extends(Input, BaseComponent);
   Input.prototype.HOUR = (function() {
     _results = [];
     for (_i = 0; _i <= 23; _i++){ _results.push(_i); }
     return _results;
   }).apply(this);
-  Input.prototype.MINUTE = (function() {
-    _results2 = [];
-    for (_j = 0; _j <= 59; _j++){ _results2.push(_j); }
-    return _results2;
-  }).apply(this);
+  Input.prototype.MINUTE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   Input.prototype.ROW_NO = {
     HOUR: 1,
     MINUTE: 2
@@ -91,7 +87,7 @@ Input = (function() {
         day: this.day,
         key: this.timeType,
         hour: this.HOUR[hourIndex],
-        minute: this.MINUTE[minIndex]
+        minute: this.MINUTE[minIndex] * 5
       };
       Ti.App.fireEvent(EventType.update_target_time, data);
       this.close();
@@ -138,7 +134,7 @@ Input = (function() {
       row = Ti.UI.createPickerRow({
         fontSize: 22,
         index: j,
-        title: "    " + value.toString(),
+        title: "    " + (value.toString() * 5),
         rowNo: this.ROW_NO.MINUTE
       });
       minuteColumn.addRow(row);
@@ -181,12 +177,6 @@ Input = (function() {
         } else {
           hour.text = 'hours';
         }
-      } else if (row.rowNo === this.ROW_NO.MINUTE) {
-        if (row.index === 1) {
-          min.text = 'min';
-        } else {
-          min.text = 'mins';
-        }
       }
     }, this));
   };
@@ -204,7 +194,7 @@ Input = (function() {
   };
   Input.prototype._setup = function() {
     this.picker.setSelectedRow(0, this.hour, true);
-    this.picker.setSelectedRow(1, this.minute, true);
+    this.picker.setSelectedRow(1, Math.floor(this.minute / 5), true);
   };
   Input.prototype.close = function() {
     var action;

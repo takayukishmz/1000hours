@@ -8,7 +8,7 @@ class CircleGraph extends BaseComponent
 	_ICON_MARGIN:10
 	_ICON_POS:[180,180]
 
-	_WEBVIEW_URL_CIRCLE :"https://1000hours.site44.com?"
+	_WEBVIEW_URL_CIRCLE :"onethousandhours.site44.com?"
 	constructor : () ->
 		@_hours = []
 		@_mins = []
@@ -16,6 +16,7 @@ class CircleGraph extends BaseComponent
 		super
 			top:45
 			height:'333'
+		
 		
 		return
 	
@@ -104,7 +105,7 @@ class CircleGraph extends BaseComponent
 			# borderColor :0 
 			# scalesPageToFit:true
 			# touchEnabled: false
-			# loading:true
+			loading:false
 			top:175
 			left:10
 			width:140
@@ -113,7 +114,7 @@ class CircleGraph extends BaseComponent
 		
 		@circleCover = Ti.UI.createView
 			top:178
-			left:12
+			left:13
 			width:140
 			height:140
 			backgroundImage : global.getImagePath 'Chart/circle'
@@ -142,7 +143,8 @@ class CircleGraph extends BaseComponent
 		@webview.addEventListener 'touchmove', () ->
 			return
 		
-		@webview.url = @_WEBVIEW_URL_CIRCLE
+		
+		@webview.url = 'https://'+@_WEBVIEW_URL_CIRCLE
 		
 		@add @webview
 		@add @webviewMsg
@@ -173,7 +175,7 @@ class CircleGraph extends BaseComponent
 			info 'use cache'
 		else 
 			@paramCache = param
-			@webview.url = @_WEBVIEW_URL_CIRCLE+param
+			@webview.url = 'https://'+@_WEBVIEW_URL_CIRCLE+param
 		
 		return 
 		

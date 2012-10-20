@@ -12,8 +12,7 @@ class Chart
 			read:0
 			listen:0
 			speak:0
-		
-		
+	
 	setGraphData : () ->
 		@_times = 
 			write:0
@@ -24,7 +23,7 @@ class Chart
 		@_setTimeData()
 		@_setBarGragh()
 		@_setCirCleGraph()
-		
+	
 	_setTimeData : () =>
 		data = db.getRawData()
 		
@@ -67,6 +66,7 @@ class Chart
 	
 	_calcWillFinishDate : (hour) ->
 		data = db.getRawData()
+		len = data.length
 		first = data[0]
 		last =  data[data.length-1]
 		
@@ -74,13 +74,19 @@ class Chart
 			info 'ERROR hour:'+hour+' first:'+JSON.stringify(first)+' last:'+JSON.stringify(last)
 			return false
 		
+		#to calc diff
 		unixFirst = new Date(first.year, first.month-1, first.day).getTime()
-		unixLast = new Date(last.year, last.month-1, last.day).getTime()
+		if len != 1
+			unixLast = new Date(last.year, last.month-1, last.day).getTime()
+			diff = unixLast - unixFirst
+		else
+			diff = 24*60*60*1000# iday
 		
-		diff = unixLast - unixFirst
+		#to calc ratio
 		ratio  = if hour then Math.floor @GOAL_HOUR/hour else 0
 		
 		if !diff or !ratio
+			info 'ERROR hour:'+hour+' first:'+JSON.stringify(first)+' last:'+JSON.stringify(last)
 			info 'ERROR diff:'+diff+' ratio:'+ratio
 			return false
 		

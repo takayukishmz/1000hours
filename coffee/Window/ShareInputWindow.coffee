@@ -8,6 +8,8 @@ class ShareInputWindow extends BaseWindow
 	
 	constructor : (@_model) ->
 		super title:'share'
+		
+		@_alertDialog = Titanium.UI.createAlertDialog()
 	
 	open:(params, type) ->
 		@win.open(params)
@@ -15,10 +17,17 @@ class ShareInputWindow extends BaseWindow
 		return
 	
 	setView: () ->
+		@setHeaderTitleImage
+			backgroundImage : global.getImagePath 'Chart/Share/title_share'
+			height:21
+			width:85
+			left:235/2
+			top:12
+		
 		textBg = Ti.UI.createView
-			top:45
+			top:51
 			left:0
-			width:'auto'
+			width:320
 			height:'154'
 			backgroundImage:global.getImagePath 'Chart/Share/bg_tweet'
 		
@@ -27,11 +36,11 @@ class ShareInputWindow extends BaseWindow
 		
 		@textCnt = Ti.UI.createLabel
 			height:30
-			top:202
-			right:10
-			width:20
+			top:180
+			left:255
+			width:50
 			text : 0
-			textAlign :'center'
+			textAlign :'right'
 			font: {fontFamily: 'Helvetica Neue', fontSize: 11}
 			color: '#333333'
 			shadowColor:'#ffffff'
@@ -42,8 +51,8 @@ class ShareInputWindow extends BaseWindow
 		@textArea = Ti.UI.createTextArea
 			# color:'#336699',
 			backgroundColor:'transparent'
-			height:150,
-			top:50,
+			height:132,
+			top:56,
 			left:10,
 			width:300,
 			# hintText:'',
@@ -56,7 +65,7 @@ class ShareInputWindow extends BaseWindow
 	
 	setButton: () ->
 		leftBtn = Ti.UI.createButton
-			top:0
+			top:1
 			left:0
 			width:78
 			height:44
@@ -70,7 +79,7 @@ class ShareInputWindow extends BaseWindow
 		@win.add leftBtn
 		
 		@rightBtn = Ti.UI.createButton
-			top:0
+			top:1
 			right:0
 			width:78
 			height:44
@@ -113,9 +122,11 @@ class ShareInputWindow extends BaseWindow
 		
 		#update text count
 		if @_type == @TYPE.TWITTER
+			@textCnt.setVisible true
 			count = @MAX_TEXT_NUM_TWITTER-len
 		else 	
-			count = len
+			@textCnt.setVisible false
+			# count = len
 		
 		@textCnt.text = count
 		#update text color
@@ -135,7 +146,7 @@ class ShareInputWindow extends BaseWindow
 				return false
 		
 		return true
-		
+	
 	
 	
 	_post : () =>
@@ -152,7 +163,7 @@ class ShareInputWindow extends BaseWindow
 			
 		return
 	
-	_postFbWall : (msg) ->
+	_postFbWall : (msg) =>
 		info 'start postWall'
 		
 		requestData = 
@@ -168,11 +179,14 @@ class ShareInputWindow extends BaseWindow
 		# 	info 'dryrun share FB'
 		# 	info 'message:'+msg
 		# 	return
-		Ti.Facebook.requestWithGraphPath 'me/feed',requestData,"POST",(e) ->
+		@rightBtn.setEnabled false
+		Ti.Facebook.requestWithGraphPath 'me/feed',requestData,"POST",(e) =>
 			info 'callback fb postWall'
+			@rightBtn.setEnabled true
 			if e.success
-				# alert "Success!  From FB: " + e.result
-				alert L 'fb_success'
+				@_alertDialog.setTitle(L('post_success'))
+				@_alertDialog.setMessage L 'fb_success'
+				@_alertDialog.show()
 				this.close()
 			else 
 				if e.error
@@ -183,12 +197,17 @@ class ShareInputWindow extends BaseWindow
 		return
 	
 	
-	_postOnTwitter : (message) ->
+	_postOnTwitter : (message) =>
+		@rightBtn.setEnabled false
 		Ti.App.twitterApi.statuses_update
 			onSuccess:(response) =>
-				alert L 'tw_success'
+				@rightBtn.setEnabled true
+				@_alertDialog.setTitle(L('post_success'))
+				@_alertDialog.setMessage L 'tw_success'
+				@_alertDialog.show()
 				this.close()
 			onError:(error) ->
+				@rightBtn.setEnabled true
 				alert L 'tw_error'
 				Ti.API.error error
 			parameters:

@@ -17,12 +17,15 @@ ShareInputWindow = (function() {
   };
   function ShareInputWindow(_model) {
     this._model = _model;
+    this._postOnTwitter = __bind(this._postOnTwitter, this);
+    this._postFbWall = __bind(this._postFbWall, this);
     this._post = __bind(this._post, this);
     this._canPost = __bind(this._canPost, this);
     this._updateTextNum = __bind(this._updateTextNum, this);
     ShareInputWindow.__super__.constructor.call(this, {
       title: 'share'
     });
+    this._alertDialog = Titanium.UI.createAlertDialog();
   }
   ShareInputWindow.prototype.open = function(params, type) {
     this.win.open(params);
@@ -30,21 +33,28 @@ ShareInputWindow = (function() {
   };
   ShareInputWindow.prototype.setView = function() {
     var textBg;
+    this.setHeaderTitleImage({
+      backgroundImage: global.getImagePath('Chart/Share/title_share'),
+      height: 21,
+      width: 85,
+      left: 235 / 2,
+      top: 12
+    });
     textBg = Ti.UI.createView({
-      top: 45,
+      top: 51,
       left: 0,
-      width: 'auto',
+      width: 320,
       height: '154',
       backgroundImage: global.getImagePath('Chart/Share/bg_tweet')
     });
     this.win.add(textBg);
     this.textCnt = Ti.UI.createLabel({
       height: 30,
-      top: 202,
-      right: 10,
-      width: 20,
+      top: 180,
+      left: 255,
+      width: 50,
       text: 0,
-      textAlign: 'center',
+      textAlign: 'right',
       font: {
         fontFamily: 'Helvetica Neue',
         fontSize: 11
@@ -59,8 +69,8 @@ ShareInputWindow = (function() {
     this.win.add(this.textCnt);
     this.textArea = Ti.UI.createTextArea({
       backgroundColor: 'transparent',
-      height: 150,
-      top: 50,
+      height: 132,
+      top: 56,
       left: 10,
       width: 300,
       value: '',
@@ -74,7 +84,7 @@ ShareInputWindow = (function() {
   ShareInputWindow.prototype.setButton = function() {
     var leftBtn;
     leftBtn = Ti.UI.createButton({
-      top: 0,
+      top: 1,
       left: 0,
       width: 78,
       height: 44,
@@ -86,7 +96,7 @@ ShareInputWindow = (function() {
     }, this));
     this.win.add(leftBtn);
     this.rightBtn = Ti.UI.createButton({
-      top: 0,
+      top: 1,
       right: 0,
       width: 78,
       height: 44,
@@ -122,9 +132,10 @@ ShareInputWindow = (function() {
     var count, len;
     len = text.length;
     if (this._type === this.TYPE.TWITTER) {
+      this.textCnt.setVisible(true);
       count = this.MAX_TEXT_NUM_TWITTER - len;
     } else {
-      count = len;
+      this.textCnt.setVisible(false);
     }
     this.textCnt.text = count;
     if (count < 0) {
@@ -167,10 +178,14 @@ ShareInputWindow = (function() {
       caption: L('share_fb_caption'),
       description: L('share_fb_description')
     };
-    Ti.Facebook.requestWithGraphPath('me/feed', requestData, "POST", function(e) {
+    this.rightBtn.setEnabled(false);
+    Ti.Facebook.requestWithGraphPath('me/feed', requestData, "POST", __bind(function(e) {
       info('callback fb postWall');
+      this.rightBtn.setEnabled(true);
       if (e.success) {
-        alert(L('fb_success'));
+        this._alertDialog.setTitle(L('post_success'));
+        this._alertDialog.setMessage(L('fb_success'));
+        this._alertDialog.show();
         return this.close();
       } else {
         if (e.error) {
@@ -179,15 +194,20 @@ ShareInputWindow = (function() {
           return alert("Unkown result");
         }
       }
-    });
+    }, this));
   };
   ShareInputWindow.prototype._postOnTwitter = function(message) {
+    this.rightBtn.setEnabled(false);
     Ti.App.twitterApi.statuses_update({
       onSuccess: __bind(function(response) {
-        alert(L('tw_success'));
+        this.rightBtn.setEnabled(true);
+        this._alertDialog.setTitle(L('post_success'));
+        this._alertDialog.setMessage(L('tw_success'));
+        this._alertDialog.show();
         return this.close();
       }, this),
       onError: function(error) {
+        this.rightBtn.setEnabled(true);
         alert(L('tw_error'));
         return Ti.API.error(error);
       },

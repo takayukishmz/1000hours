@@ -121,6 +121,7 @@ CalendarView = (function() {
       this.alert.show();
       return;
     }
+    info(data);
     this.dayNum.backgroundImage = global.getImagePath('Calendar/Date/date_' + data.day);
     this.dayNum.value = data.day;
     this.dayNum.setVisible(true);
@@ -237,7 +238,7 @@ CalendarView = (function() {
   CalendarView.prototype._buildTitlePanel = function() {
     var M, Y, now;
     this._title = Ti.UI.createLabel({
-      top: 2,
+      top: 3.9,
       left: 30,
       width: 150,
       height: 24,
@@ -297,7 +298,7 @@ CalendarView = (function() {
       value = _ref[index];
       title = Ti.UI.createLabel({
         top: 33,
-        left: 45 * index,
+        left: 45.7 * index,
         width: 45,
         height: 12,
         text: value,

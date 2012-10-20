@@ -15,13 +15,12 @@ class TutorialWindow extends BaseWindow
 		for	i in [1..@_TUTORIAL_NUM]
 			view = Ti.UI.createView
 				top:0
+				left:0
 				width:320
 				height:372
 				backgroundImage : global.getImagePath('Jp/Tutorial/t'+i)
 			
 			views.push view
-		
-		
 		
 		bottombar = Titanium.UI.createView
 			left: 0
@@ -42,7 +41,6 @@ class TutorialWindow extends BaseWindow
 			currentPage:0
 		
 		@win.add scrollView
-		
 		return
 		
 	setButton: () =>
@@ -66,9 +64,7 @@ class TutorialWindow extends BaseWindow
 		# 	backgroundImage : global.getImagePath 'Calendar/btn_cancel'
 		# 	backgroundSelectedImage : global.getImagePath 'Calendar/btn_cancel_dw'
 		# 
-
 		return
-		
 	
 	setRightBtn : () ->
 		rightBtn = Ti.UI.createButton

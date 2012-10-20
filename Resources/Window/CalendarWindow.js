@@ -104,7 +104,16 @@ CalendarWindow = (function() {
         day: day
       });
     }, this));
-    this.win.addEventListener('focus', __bind(function(e) {}, this));
+    this.win.addEventListener('focus', __bind(function(e) {
+      if (!global.tutorialManager.isDone(global.tutorialManager.LIST.START)) {
+        this._tutorialWindow = new TutorialWindow({
+          standAlone: true
+        });
+        return this._tutorialWindow.open({
+          modal: true
+        });
+      }
+    }, this));
   };
   return CalendarWindow;
 })();

@@ -108,10 +108,10 @@ class CalendarWindow extends BaseWindow
 		
 		@win.addEventListener 'focus', (e) =>
 			# info '1'
-			# if !global.tutorialManager.isDone global.tutorialManager.LIST.START
-			# 	info '2'
-			# 	@_tutorialWindow = new TutorialWindow {standAlone:true}
-			# 	@_tutorialWindow.open modal:true
+			if !global.tutorialManager.isDone global.tutorialManager.LIST.START
+				# info '2'
+				@_tutorialWindow = new TutorialWindow {standAlone:true}
+				@_tutorialWindow.open modal:true
 			# 		
 		return
 	
